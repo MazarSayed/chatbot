@@ -1,0 +1,7 @@
+python-dotenv
+langchain_core
+langchain
+langchain-groq
+streamlit
+langchain_community
+groq
