@@ -1,0 +1,3 @@
+prompt_folder_path: ./prompts/
+owner: CelestialBI Dentals
+services: ['Braces','Cleaning','Emergency','Aligners','Whitening','Something Else']
