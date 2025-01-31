@@ -13,51 +13,48 @@ greeting_prompt: |
         "Services": "Ask them how you can help them",
         "JSON_services" : "List down the services {Services}
         }}
-        DO NOT include any preamble or postambles, just provide the JSON Struct.
+        DO NOT include any preamble or postambles.
         JSON_Response:
          
 
 testimony_prompt: |   
         1.Appreciate the Respose of the user.
-        2.Provide a response on how {Business} is amzaing at providing the {Service} service using the Customer Testimonials ({Service_testimonials}).
+        2.Provide a response on how the Business is amzaing at providing the service using the Customer Testimonials.
         3.Then ask whether the user has further questions ?
-        JSON_Response:
-        {{
-        "Message": "Provide a Short (Under 100 words) response specifically using the info in the Customer Testimonials (DO NOT Mention Names) and then do you have any further questions ?"
-        }}
+        example_Response:
+        "Response": "Provide a Short (Under 100 words) response specifically using the info in the Customer Testimonials (DO NOT Mention Names) and then do you have any further questions ?"
         If the asks about 'Something Else', then:
-        JSON_Response:
-        {{
-        "Message": "Ask the user how you can help him/her?"
-        }}
-        DO NOT include any preamble or postambles, just provide the JSON Struct.
-        JSON_Response:
+        example_Response:
+        "Response": "Ask the user how you can help him/her?"
+
+        DO NOT include any preamble or postambles.
+         MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+        Response:
 
 insurance_prompt: |
-        1.Check if {Input} exists in the Inusrance List: {Insurances}
+        1.Check if User_Insurance exists in the Insurance List.
         If YES: give a very short positive response
         If NO: give a long please sorry message
         2.Then ask whether the user has further questions ? 
-        JSON_Response:
-        {{
-        "Message": "Provide a very short response the business convers the insurance or not, do you have any further questions ?"
-        }}
+        example:
+        "Response": "Provide a very short response the business convers the insurance or not, do you have any further questions ?"
         DO NOT list the insurances we cover in the response.
-        DO NOT include any preamble or postambles, just provide the JSON Struct.
-        JSON_Response:       
+        DO NOT include any preamble or postambles.
+         MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+        Response:       
 
 costing_prompt: |
-        JSON_Response:
-        {{
-        "Message": "The total cost of the services depends on the actual treatment you receive during your visit. 
+        example:
+        "Response": "The total cost of the services depends on the actual treatment you receive during your visit. 
         However, insurance will cover the majority cost of your cleaning. 
         Our office manager will be happy to provide a more accurate cost estimate. 
         Would you like our team to check for you?"
-        }}
 
         Provide a similar reponse.
-        DO NOT include any preamble or postambles, just provide the JSON Struct.
-        JSON_Response:
+        DO NOT include any preamble or postambles.
+         MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+
+        Response:
 
 
 decesion_prompt: |
@@ -77,4 +74,7 @@ decesion_prompt: |
         Category:        
 
 qa_prompt: |
-        Asnwer {query} in a more polite and friendly manner.
+        Answer user_query in a more polite and friendly manner.
+        DO NOT include any preamble or postambles.
+        MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+        Response:
