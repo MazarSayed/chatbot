@@ -3,6 +3,7 @@ import json
 from typing import Dict,Any
 import os
 import logging
+from pathlib import Path
 
 def load_yaml(file_path):
     with open(file_path,'r') as stream:
@@ -25,8 +26,10 @@ def load_config() -> Dict[str, Any]:
     Load configuration settings from YAML files.
     """
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    config_file_path = "/workspaces/chatbot/config/config.yaml"
-    prompt_file_path = "/workspaces/chatbot/prompts/prompts.yaml"
+
+    workspace_root = Path("/workspaces/chatbot")  # Set root of the workspace
+    config_file_path = workspace_root / "config" / "config.yaml"
+    prompt_file_path = workspace_root / "prompts" / "prompts.yaml"
 
     config = load_yaml(config_file_path)
     prompts = load_yaml(prompt_file_path)
