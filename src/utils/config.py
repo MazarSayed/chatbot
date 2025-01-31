@@ -25,8 +25,8 @@ def load_config() -> Dict[str, Any]:
     Load configuration settings from YAML files.
     """
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    config_file_path = "chatbot/config/config.yaml"
-    prompt_file_path = "chatbot/prompts/prompts.yaml"
+    config_file_path = "/workspaces/chatbot/config/config.yaml"
+    prompt_file_path = "/workspaces/chatbot/prompts/prompts.yaml"
 
     config = load_yaml(config_file_path)
     prompts = load_yaml(prompt_file_path)
