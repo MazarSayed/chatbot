@@ -27,7 +27,7 @@ def load_config() -> Dict[str, Any]:
     """
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
-    workspace_root = Path("/chatbot")  # Set root of the workspace
+    workspace_root = Path("workspaces/chatbot")  # Set root of the workspace
     config_file_path = workspace_root / "config" / "config.yaml"
     prompt_file_path = workspace_root / "config" / "prompts.yaml"
 
