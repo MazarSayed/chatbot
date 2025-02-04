@@ -35,7 +35,7 @@ def tools():
                             "description": "Name of the insurance"
                         }
                     },
-                    "required": ["services", "insurance"]  # Updated required fields
+                    "required": ["", "insurance"]  # Updated required fields
                 }
             }
         },
@@ -52,7 +52,7 @@ def tools():
                             "description": "Type of the dental service"
                         }
                     },
-                    "required": ["services"]
+                    "required": [""]
                 }
             }
         },
