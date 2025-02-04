@@ -11,7 +11,7 @@ def greeting(groq_api_key):
     logging.info("Greetings")
     api_key = groq_api_key
 
-    config,prompt = load_config()
+    config,prompts = load_config()
     model = ChatGroq(
                 model="llama3-70b-8192",
                 api_key=api_key
@@ -21,8 +21,8 @@ def greeting(groq_api_key):
     
     
     prompt = ChatPromptTemplate.from_messages([
-            ("system", prompt['system_prompt']),
-            ("human", prompt['greeting_prompt'])
+            ("system", prompts['system_prompt']),
+            ("human", prompts['greeting_prompt'])
         ])
     
     greeting =  prompt | model | JsonOutputParser()
