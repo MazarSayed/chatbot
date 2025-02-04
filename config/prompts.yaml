@@ -44,7 +44,7 @@ insurance_prompt: |
         PLEASE: If User_Insurance is not provided, Response : List all the insurances the business covers.
         Response:    
 
-costing_prompt: |s
+costing_prompt: |
         example:
         "Response": "The total cost of the services depends on the actual treatment you receive during your visit. 
         However, insurance will cover the majority cost of your cleaning. 
