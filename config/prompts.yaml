@@ -22,10 +22,10 @@ testimony_prompt: |
         2.Provide a response on how the Business is amzaing at providing the service using the Customer Testimonials.
         3.Then ask whether the user has further questions ?
         example_Response:
-        "Response": "Provide a Short (Under 100 words) response specifically using the info in the Customer Testimonials (DO NOT Mention Names) and then do you have any further questions ?"
+        "Response": Provide a Short (Under 100 words) response specifically using the info in the Customer Testimonials (DO NOT Mention Names) and then do you have any further questions ?
         If the asks about 'Something Else', then:
         example_Response:
-        "Response": "Ask the user how you can help him/her?"
+        "Response": Ask the user how you can help him/her?
 
         DO NOT include any preamble or postambles.
         MAKE SURE: Provide the response in markdown format with only appropriate line breaks using "\n".
