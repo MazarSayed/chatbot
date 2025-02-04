@@ -8,7 +8,7 @@ def service_testimonial(dental_services: str)->str:
     return output_message
 
 
-def insurance_inquiry(insurance:str,services:str=None)->str:
+def insurance_inquiry(insurance:str)->str:
     config,prompt = load_config()
 
     Insurances = extract_insurances()
@@ -23,7 +23,7 @@ def general_question(query:str)->str:
     output_message = f"user_query:{query}\n"+f"Instructions:{prompt['qa_prompt']}"
     return output_message
 
-def service_costing(service:str)->str:
+def service_costing()->str:
     config,prompt = load_config()
      
     output_message = prompt['costing_prompt']

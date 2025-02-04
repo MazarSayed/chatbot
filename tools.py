@@ -35,7 +35,7 @@ def tools():
                             "description": "Name of the insurance"
                         }
                     },
-                    "required": ["", "insurance"]  # Updated required fields
+                    "required": ["insurance"]  # Updated required fields
                 }
             }
         },
@@ -44,16 +44,6 @@ def tools():
             "function": {
                 "name": "service_costing",
                 "description": "Provides information about the cost of dental services",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "services": {
-                            "type": "string",
-                            "description": "Type of the dental service"
-                        }
-                    },
-                    "required": [""]
-                }
             }
         },
         {

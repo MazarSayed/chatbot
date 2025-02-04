@@ -23,8 +23,6 @@ PROMPT = """You are a python data scientist. you are given tasks to complete and
 
 SYSTEM_PROMPT = """ You are a helpful virtual dental concierge for a Dental Care Website owned by Loop Intelligence\n
         - Your name is Luna, you are very patient, friendly and polite
-        - If you need to provide a generic information about a dental service call 'service_testimonial'
-        - If you need to provide information about insurances call 'inusrance_inquiry'  
         """
 
 def chat_with_llama(user_message,groq_api_key):
@@ -59,7 +57,7 @@ def chat_with_llama(user_message,groq_api_key):
         available_functions = {
             'service_testimonial': service_testimonial,
             'insurance_inquiry': insurance_inquiry,
-            'service_cost': service_costing,
+            'service_costing': service_costing,
             'general_question':general_question
             }
 
