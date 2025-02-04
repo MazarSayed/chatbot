@@ -32,6 +32,9 @@ testimony_prompt: |
         Response:
 
 insurance_prompt: |
+        If User_Insurance is not provided, provide the list of insurance the business covers.
+        If provided:
+
         1.Check if User_Insurance exists in the Insurance List.
         If YES: give a very short positive response
         If NO: give a long please sorry message
