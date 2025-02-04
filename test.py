@@ -6,6 +6,7 @@ from groq import Groq
 from src.utils.config import load_config
 from src.nodes.functions import service_testimonial,insurance_inquiry,general_question,service_costing
 from tools import tools
+import streamlit as st
 config,prompt = load_config()
 load_dotenv()
 
@@ -65,7 +66,10 @@ def chat_with_llama(user_message,groq_api_key):
     for tool_call in response_message.tool_calls:
         function_name = tool_call.function.name
         print(function_name)
-        function_to_call = available_functions[function_name]
+        if function_name in available_functions:
+            function_to_call = available_functions[function_name]
+        else:
+            st.error(f"Function '{function_name}' not found in available_functions.")
         function_args = json.loads(tool_call.function.arguments)
         print(function_args)
         function_response = function_to_call(**function_args)
