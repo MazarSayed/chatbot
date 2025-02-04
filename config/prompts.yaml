@@ -28,7 +28,7 @@ testimony_prompt: |
         "Response": "Ask the user how you can help him/her?"
 
         DO NOT include any preamble or postambles.
-         MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+        MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
         Response:
 
 insurance_prompt: |
@@ -37,10 +37,10 @@ insurance_prompt: |
         If NO: give a long please sorry message
         2.Then ask whether the user has further questions ? 
         example:
-        "Response": "Provide a very short response the business convers the insurance or not, do you have any further questions ?"
+        "Response": Provide a very short response the business convers the insurance or not, do you have any further questions ?
         DO NOT list the insurances we cover in the response.
         DO NOT include any preamble or postambles.
-         MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+        MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
         Response:       
 
 costing_prompt: |
@@ -52,8 +52,7 @@ costing_prompt: |
 
         Provide a similar reponse.
         DO NOT include any preamble or postambles.
-         MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
-
+        MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
         Response:
 
 
