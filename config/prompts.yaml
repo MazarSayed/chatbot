@@ -28,7 +28,7 @@ testimony_prompt: |
         "Response": "Ask the user how you can help him/her?"
 
         DO NOT include any preamble or postambles.
-        MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+        MAKE SURE: Provide the response in markdown format with only appropriate line breaks using "\n".
         Response:
 
 insurance_prompt: |
@@ -40,7 +40,7 @@ insurance_prompt: |
         "Response": Provide a very short response the business convers the insurance or not, do you have any further questions ?
         DO NOT list the insurances we cover in the response.
         DO NOT include any preamble or postambles.
-        MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+        MAKE SURE: Provide the response in markdown format with only appropriate line breaks using "\n".
         Response:       
 
 costing_prompt: |
@@ -52,7 +52,7 @@ costing_prompt: |
 
         Provide a similar reponse.
         DO NOT include any preamble or postambles.
-        MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+        MAKE SURE: Provide the response in markdown format with only appropriate line breaks using "\n".
         Response:
 
 
@@ -75,5 +75,5 @@ decesion_prompt: |
 qa_prompt: |
         Answer user_query in a more polite and friendly manner.
         DO NOT include any preamble or postambles.
-        MAKE SURE: Provide the response in markdown format with appropriate line breaks using "\n".
+        MAKE SURE: Provide the response in markdown format with only appropriate line breaks using "\n".
         Response:
