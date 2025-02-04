@@ -1,0 +1,45 @@
+testimonials:
+- id: "test1"
+  content: "TestimonialBrookline progressive dental team is fantastic Everyone in the office is professional and friendly. 
+  I am particularly fond of Dr. Kwak who makes every visit fun and enjoyable whether it’s a cleaning or cap replacement. 
+  She performs excellent work while explaining the issue, process and expectations. Highly recommend - Deryle H."
+  services: ["Cleaning"]
+  rating : "5 star"
+
+- id: "test2"
+  content : "I can’t say enough good things about Dr. Kwak and her amazing team.
+  I had always been terrified of dentists but couldn’t put it off any longer. 
+  Dr. Kwak is fantastic when it comes to working with patients like myself that demand extra patience and a lot of explaining. 
+  She is very friendly and does excellent work. I couldn’t be happier with my new crown!
+  The front desk team is always welcoming and helpful, giving excellent explanation about everything that has to do with payments and insurance issues. 
+  Always friendly and highly professional on the phone and in person.
+  And I absolutely loved Aimee the hygienist! Best cleaning I’ve ever had!! - Lee K."
+  services: ["Emergency"]
+  rating : "5 star"
+
+- id: "test3"
+  content : "Dr. Jonell Hopeck is AMAZING!! She performed both my extraction and dental implant. 
+  Her bubbly personality and personable demeanor made all my anxiety melt away. Dr. Hopeck tells you what she’s doing and why and what the follow up will be. 
+  Once again, here’s a phrase that I though I would never utter, but my procedures were painless, comfortable and I was even laughing at Dr. Hopeck ‘s awesome stories. 
+  The entire Brookline Progressive Dental Staff should be commended for excellent and personalized service - Lee K."
+  services: ["Emergency"]
+  rating : "5 star"  
+
+- id: "test3"
+  content : "Dr. Jonell Hopeck is AMAZING!! She performed both my extraction and dental implant. 
+  Her bubbly personality and personable demeanor made all my anxiety melt away. Dr. Hopeck tells you what she’s doing and why and what the follow up will be. 
+  Once again, here’s a phrase that I though I would never utter, but my procedures were painless, comfortable and I was even laughing at Dr. Hopeck ‘s awesome stories. 
+  The entire Brookline Progressive Dental Staff should be commended for excellent and personalized service - Blue L."
+  services: ["Emergency"]
+  rating : "5 star"   
+
+- id: "test4"
+  content: "I have been scared of the dentist since I was a little girl, and my visits with Dr. Kwak are the rare moments that I’ve felt safe and well taken care of in the dentist chair. 
+  Dr. Kwak is amazing. She takes the time to get everything right and you can tell she truly enjoys and takes pride in her work. 
+  I had a crown done and she turned a very unpleasant situation into a great one. 
+  She assured me that she was using the highest quality materials. As a lady that takes pride in my appearance, who wants to skimp on your dental treatments? 
+  Definitely not me. I would recommend Brookline Progressive to anyone in search of a dentist that has any anxiety.
+  My hygienist was so thoughtful and attentive. She made sure I was comfortable and well informed about everything that she was doing. 
+  The office staff is helpful and pleasant - Dana A."
+  services: ["Cleaning"]
+  rating : "5 star"  
