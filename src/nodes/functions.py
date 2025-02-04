@@ -12,8 +12,10 @@ def insurance_inquiry(insurance:str)->str:
     config,prompt = load_config()
 
     Insurances = extract_insurances()
-    
-    output_message = f"My Insurances:{insurance}\n" +f"Covered Insurances:{Insurances}\n"+f"Instructions:{prompt['insurance_prompt']}" 
+    if insurance not in Insurances:
+        output_message =  f"Provide a sorry message and Provide the list of insrances we cover {Insurances}"
+    else:
+        output_message = f"My Insurances:{insurance}"+"\n"+f"Covered Insurances:{Insurances}"+"\n"+ f"Instructions:{prompt['insurance_prompt']}"
     return output_message
 
 

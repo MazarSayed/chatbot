@@ -41,7 +41,6 @@ insurance_prompt: |
         DO NOT list the insurances we cover in the response.
         DO NOT include any preamble or postambles.
         MAKE SURE: Provide the response in markdown format with only appropriate line breaks using "\n".
-        PLEASE: If User_Insurance is not provided, Response : List all the insurances the business covers.
         Response:    
 
 costing_prompt: |
