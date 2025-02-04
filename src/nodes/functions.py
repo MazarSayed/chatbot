@@ -13,7 +13,7 @@ def insurance_inquiry(insurance:str)->str:
 
     Insurances = extract_insurances()
     if insurance not in Insurances:
-        output_message =  f"Provide a sorry message and the list of insrances we cover {Insurances}, Response:"
+        output_message =  f"Provide a sorry message and the list of insurances we cover {Insurances}, Response:"
     else:
         output_message = f"My Insurances:{insurance}"+"\n"+f"Covered Insurances:{Insurances}"+"\n"+ f"Instructions:{prompt['insurance_prompt']}"
     return output_message
