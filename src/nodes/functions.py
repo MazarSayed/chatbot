@@ -13,7 +13,7 @@ def insurance_inquiry(insurance:str)->str:
 
     Insurances = extract_insurances()
     
-    output_message = f"Instructions:{prompt['insurance_prompt']}"+f"My Insurances:{insurance}" +f"Covered Insurances:{Insurances}" 
+    output_message = f"My Insurances:{insurance}\n" +f"Covered Insurances:{Insurances}\n"+f"Instructions:{prompt['insurance_prompt']}" 
     return output_message
 
 

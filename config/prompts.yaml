@@ -32,9 +32,6 @@ testimony_prompt: |
         Response:
 
 insurance_prompt: |
-        If User_Insurance is not provided, provide the list of insurance the business covers.
-        If provided:
-
         1.Check if User_Insurance exists in the Insurance List.
         If YES: give a very short positive response
         If NO: give a long please sorry message
@@ -44,9 +41,10 @@ insurance_prompt: |
         DO NOT list the insurances we cover in the response.
         DO NOT include any preamble or postambles.
         MAKE SURE: Provide the response in markdown format with only appropriate line breaks using "\n".
-        Response:       
+        PLEASE: If User_Insurance is not provided, Response : List all the insurances the business covers.
+        Response:    
 
-costing_prompt: |
+costing_prompt: |s
         example:
         "Response": "The total cost of the services depends on the actual treatment you receive during your visit. 
         However, insurance will cover the majority cost of your cleaning. 
