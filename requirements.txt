@@ -5,3 +5,4 @@ langchain-groq
 streamlit
 langchain_community
 groq
+chromadb
