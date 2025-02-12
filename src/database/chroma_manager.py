@@ -2,7 +2,10 @@ import chromadb
 from chromadb.config import Settings
 import json
 import yaml
+__import__('pysqlite3')
+import sys
 
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 class ChromaManager:
     def __init__(self, db_path):
