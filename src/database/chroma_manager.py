@@ -5,9 +5,7 @@ import yaml
 
 class ChromaManager:
     def __init__(self, db_path):
-        self.client = chromadb.api.client.SharedSystemClient.clear_system_cache()
         self.client = chromadb.Client(Settings(persist_directory=db_path))
-
         self.collections = {}
 
     def get_or_create_collection(self, collection_name):
@@ -31,7 +29,7 @@ class ChromaManager:
             query_texts=[query],
             n_results=n_results
         )
-        return [json.loads(doc) for doc in results['documents'][0]]
+        return [[entry['answer'] for sublist in results['metadatas'] for entry in sublist]]
     
     def get_all_documents(self, collection_name):
         collection = self.get_or_create_collection(collection_name)
@@ -42,7 +40,7 @@ class ChromaManager:
         return [json.loads(doc) for doc in results['documents']]
 
     def add_question_answer(self, question, answer):
-        self.add_qa("list_of_QA", answer, {"question": question})
+        self.add_qa("list_of_QA", question, {"answer": answer})
 
     def get_question_answer(self, question, n_results=1):
         return self.get_qa("list_of_QA", question, n_results)

@@ -91,3 +91,41 @@ def chat_with_llama(user_message,groq_api_key):
             yield chunk
     messages.append(content_response)         
 
+
+
+
+
+def rag(query, retrieved_documents,groq_api_key,delay):
+    information = "\n\n".join(retrieved_documents)
+    print(f"\n{'='*50}\n Information : {information}\n{'='*50}")
+
+    messages = [
+        {
+            "role": "system",
+            "content": """You are a helpful virtual dental concierge for a Dental Care Website owned by Loop Intelligence\n
+                          Your name is Luna, you are very patient, friendly and polite. Your users are asking questions about information about Dental Service Information.
+                          You will be shown the user's question, and the exact response you need to provide. Answer the user's question by that exact response with no changes."""
+        },
+        {"role": "user", "content": f"Question: {query}. \n Information: {information}, JSON_Response:"}
+    ]
+    
+    print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
+
+    client = Groq(api_key=groq_api_key)
+    content_response = ""
+
+    response = client.chat.completions.create(
+        model="llama3-70b-8192",
+        messages=messages,
+        temperature = 0,
+        max_tokens = 4096,
+        stream = True)
+
+    for chunk in response:
+        chunk = chunk.choices[0].delta.content
+        time.sleep(delay)
+        if chunk:
+            content_response += chunk
+            yield chunk
+    messages.append(content_response)         
+        

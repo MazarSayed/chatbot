@@ -9,48 +9,9 @@ from src.utils.config import populate_chroma_db
 from groq import Groq
 import json
 import time
+from test import rag
 config,prompt = load_config()
 load_dotenv()
-
-
-
-def rag(query, retrieved_documents,groq_api_key,delay):
-    information = "\n\n".join(retrieved_documents)
-
-    messages = [
-        {
-            "role": "system",
-            "content": """You are a helpful virtual dental concierge for a Dental Care Website owned by Loop Intelligence\n
-                          Your name is Luna, you are very patient, friendly and polite. Your users are asking questions about information about Dental Service Information.
-                          You will be shown the user's question, and the exact response you need to provide. Answer the user's question by that exact response with no changes."""
-        },
-        {"role": "user", "content": f"Question: {query}. \n Information: {information}, JSON_Response:"}
-    ]
-    
-    print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
-
-    client = Groq(api_key=groq_api_key)
-    content_response = ""
-
-    response = client.chat.completions.create(
-        model="llama3-70b-8192",
-        messages=messages,
-        temperature = 0,
-        max_tokens = 4096,
-        stream = True)
-
-    for chunk in response:
-        chunk = chunk.choices[0].delta.content
-        time.sleep(delay)
-        if chunk:
-            content_response += chunk
-            yield chunk
-    messages.append(content_response)         
-        
-
-
-
-
 
 def clear_submit():
       st.session_state["submit"] = False
@@ -92,7 +53,7 @@ else:
             st.session_state.messages.append({"role": "user", "content": query})
             st.chat_message("user").write(query)
             full_response = ""
-            retrieved_qa = chroma_manager.get_question_answer(query, 1)
+            retrieved_qa = chroma_manager.get_question_answer(query, 2)
             with st.chat_message("assistant"):
                 response_text = ""
                 # Stream tokens from the generate_response() function
