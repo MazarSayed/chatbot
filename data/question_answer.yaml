@@ -28,11 +28,15 @@
 
       We can provide you with more details or even a preliminary estimate during a consultation. Would you like to schedule a free consultation with us? 
 
-- question : Do you accept Dental XXXX Insurance? 
+- question : Do you take or accept r cover XXX Dental insurance? 
   answer : | 
       List of Insurances we cover : ["Delta Dental of Massachusetts","Blue Cross Blue Shield of Massachusetts","Cigna Dental","Guardian Dental","MetLife Dental","Humana Dental"]
-      If the user insurance if mentioned in the list,
-      Then, Response:  Yes, we accept XXXX dental insurance. 
+      If "XXXX" insurance is in the above list, 
+      Then:
+      "RESPONSE": Yes, we accept XXXX insurance. Our office will handle submitting your claims directly to XXXX, ensuring a smooth and hassle-free experience for you. Our practice is well-coordinated with XXXX, making your dental care both convenient and efficient.
+      Else:
+      "RESPONSE":  No we don't cover XXXX dental insurance.
+      Make sure to only provide the above RESPONSE, Do not provide the User_Question.
 
 - question : Will my insurance cover Invisalign treatment? 
   answer : | 
@@ -88,4 +92,42 @@
   answer : | 
     Depending on the complexity of your case, you could start seeing results in your treatment in as little as 6 months. 
 
- 
+- question : Are you accepting new patients? 
+  answer : | 
+    Yes, we do.
+
+- question : Are you in-network with XXX insurance? 
+  answer : | 
+    Answer (Option 1):  
+    While we are out-of-network with all insurance providers, we want to assure you that our patients often choose us for the exceptional quality of care and service we provide.  
+    We currently serve over 2,000 patients from the Greater Boston area. Our practice prides itself on delivering unparalleled dental experiences, which many of our patients find well worth the investment. 
+    We'll work with you to maximize your insurance benefits, handle all claim submissions, and provide transparent pricing.  
+    We invite you to experience the difference our dedication can make in your dental health. Simply fill out our Appointment Request Form below, and our Office Manager will reach out to set up your first appointment with us.  
+
+    Answer (Option 2):  
+    We focus on delivering top-quality dental care that stands out in the Greater Boston area. Our commitment to excellence is why many patients choose our practice.  
+    For detailed information about how we work with your insurance, I recommend having a call with our Office Manager. They'll be able to give you all the specifics and answer any questions you might have about your insurance.  
+    Simply fill out our quick Contact Request Form below, and our Office Manager will reach out to you at your convenience. Let's discuss how we can cater to your dental needs! 
+
+- question : What is the first available appointment?  
+  answer : |  
+    To find out the first available appointment, please fill out the Appointment Request form. Our Office Manager will contact you at your convenience to set up the appointment. Let's get you scheduled! 
+
+- question : Where is your office located? 
+  answer : | 
+    Our office is located at 1842 Beacon Street, Suite 301, Brookline, MA 02445. We're literally at the corner of Beacon Street and Englewood Avenue, where the Green Line Englewood Ave stop is right in front of our building, making us incredibly accessible by public transit or car with easy street parking.  
+
+    Instructions to Find Us: 
+
+    - By Car: 
+        - Drive to Beacon Street and look for Englewood Ave; we're at that corner with plenty of metered parking spots right outside.
+
+    - By Public Transit: 
+        - Green Line (C Branch): Just hop off at the "Englewood Ave" stop, and you're already there! Our office is directly in front of you. 
+
+    - Once at the Building: 
+        - Take the stairs or elevator to the third floor. Our suite, 301, is clearly marked. 
+
+- question : Where can I park?   
+  answer : |
+    There's metered street parking directly in front of our building on Beacon Street or along Englewood Avenue. Look for available spots; they're usually easy to find. Remember to check the meters for time limits and have change or use a parking app if needed.    

@@ -9,7 +9,7 @@ from src.utils.config import populate_chroma_db
 from groq import Groq
 import json
 import time
-from test import rag
+from src.rag import rag
 config,prompt = load_config()
 load_dotenv()
 
@@ -33,17 +33,16 @@ chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
 
 populate_chroma_db(chroma_manager)
 groq_api_key = st.text_input("Groq API Key", type="password")
+response_text = ""
+retrieved_qa = chroma_manager.get_question_answer("Hi", 1)
+
 
 if not groq_api_key:
     st.info("Please add your Groq API key to continue.", icon="🗝️")
 else:
-    response_text = ""
-    retrieved_qa = chroma_manager.get_question_answer("Hi", 1)
-    for token in rag("Hi",retrieved_qa,groq_api_key,0):
-        response_text += token                
-
     if "messages" not in st.session_state or st.sidebar.button("Clear conversation history"):
-        st.session_state["messages"] = [{"role": "assistant", "content": response_text}]
+ 
+        st.session_state["messages"] = [{"role": "assistant", "content": retrieved_qa[0][0][0]}]
 
     for msg in st.session_state.messages:
         st.chat_message(msg["role"]).write(msg["content"])
@@ -53,10 +52,11 @@ else:
             st.session_state.messages.append({"role": "user", "content": query})
             st.chat_message("user").write(query)
             full_response = ""
-            retrieved_qa = chroma_manager.get_question_answer(query, 2)
+            retrieved_qa,results = chroma_manager.get_question_answer(query, 1)
+            print(results)
             with st.chat_message("assistant"):
                 response_text = ""
                 # Stream tokens from the generate_response() function
                 for chunk in st.write_stream(rag(query,retrieved_qa,groq_api_key,0.075)):
-                    response_text += token                
+                    response_text += chunk                
                 st.session_state.messages.append({"role": "assistant", "content": response_text})

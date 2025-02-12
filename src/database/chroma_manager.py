@@ -5,6 +5,7 @@ import yaml
 
 class ChromaManager:
     def __init__(self, db_path):
+        chromadb.api.client.SharedSystemClient.clear_system_cache()
         self.client = chromadb.Client(Settings(persist_directory=db_path))
         self.collections = {}
 
@@ -29,7 +30,7 @@ class ChromaManager:
             query_texts=[query],
             n_results=n_results
         )
-        return [[entry['answer'] for sublist in results['metadatas'] for entry in sublist]]
+        return [[entry['answer'] for sublist in results['metadatas'] for entry in sublist]],results
     
     def get_all_documents(self, collection_name):
         collection = self.get_or_create_collection(collection_name)
