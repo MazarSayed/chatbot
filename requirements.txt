@@ -6,3 +6,5 @@ streamlit
 langchain_community
 groq
 chromadb
+pysqlite3-binary
+sqlite3==3.34.1

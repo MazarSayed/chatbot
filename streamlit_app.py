@@ -7,9 +7,18 @@ from langchain_groq import ChatGroq
 from src.database.chroma_manager import ChromaManager
 from src.utils.config import populate_chroma_db
 from groq import Groq
-import json
-import time
+import sqlite3
+from streamlit import logger
 from src.rag import rag
+__import__('pysqlite3')
+import sys
+
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+app_logger = logger.get_logger("LOOP APP")
+app_logger.info(f"sqlite version: {sqlite3.sqlite_version}")
+app_logger.info(f"sys_version:{sys.version}")
+
 config,prompt = load_config()
 load_dotenv()
 
