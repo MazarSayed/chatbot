@@ -2,10 +2,10 @@ import chromadb
 from chromadb.config import Settings
 import json
 import yaml
-__import__('pysqlite3')
-import sys
+#__import__('pysqlite3')
+#import sys
 
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+#sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 class ChromaManager:
     def __init__(self, db_path):
@@ -28,13 +28,28 @@ class ChromaManager:
             ids=[id]
         )
 
-    def get_qa(self, collection_name, query, n_results):
-        collection = self.get_or_create_collection(collection_name)
+    def service_get_qa(self, query,keyword, n_results=1):
+        collection = self.get_or_create_collection("list_of_QA")
         results = collection.query(
             query_texts=[query],
-            n_results=n_results
+            n_results=n_results,
+            where_document={"$contains": keyword}
         )
         return [[entry['answer'] for sublist in results['metadatas'] for entry in sublist]],results
+    
+    def general_get_qa(self, query,services,n_results=1):
+        collection = self.get_or_create_collection("list_of_QA")
+        
+        filter_conditions = [{"$not_contains": s} for s in services]
+
+        results = collection.query(
+            query_texts=[query],
+            n_results=n_results,
+            where_document={"$and": filter_conditions}
+        )
+
+        return [[entry['answer'] for sublist in results['metadatas'] for entry in sublist]], results
+
     
     def get_all_documents(self, collection_name):
         collection = self.get_or_create_collection(collection_name)
@@ -46,9 +61,6 @@ class ChromaManager:
 
     def add_question_answer(self, question, answer):
         self.add_qa("list_of_QA", question, {"answer": answer})
-
-    def get_question_answer(self, question, n_results=1):
-        return self.get_qa("list_of_QA", question, n_results)
 
 
 

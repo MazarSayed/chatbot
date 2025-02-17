@@ -4,7 +4,7 @@ import json
 import time
 from groq import Groq
 from src.utils.config import load_config
-from src.nodes.functions import service_testimonial,insurance_inquiry,general_question,service_costing
+from src.nodes.functions import dental_services,general_question
 from tools import tools
 import streamlit as st
 config,prompt = load_config()
@@ -21,17 +21,22 @@ PROMPT = """You are a python data scientist. you are given tasks to complete and
 - you can install any pip package (if it exists) if you need to but the usual packages for data analysis are already preinstalled.
 - you can run any python code you want, everything is running in a secure sandbox environment"""
 
-SYSTEM_PROMPT = """ You are a helpful virtual dental concierge for a Dental Care Website owned by Loop Intelligence\n
-        - Your name is Luna, you are very patient, friendly and polite
-        """
 
-def chat_with_llama(user_message,groq_api_key):
-    print(f"\n{'='*50}\nUser message: {user_message}\n{'='*50}")
+
+def chat_with_llama(query,recent_history,groq_api_key):
+    print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
 
     client = Groq(api_key=groq_api_key)
     messages = [
-        {"role":"system","content": SYSTEM_PROMPT},
-        {"role": "user", "content": user_message},]
+        {"role":"system","content": prompt["system_prompt"]}]
+    messages.extend(recent_history)
+
+    user_message = {
+        "role": "user",
+        "content": f"Question: {query}, pr"
+    }
+    messages.append(user_message)
+    print(messages)
 
     response = client.chat.completions.create(
         model="llama3-70b-8192",
@@ -55,10 +60,8 @@ def chat_with_llama(user_message,groq_api_key):
     # Process function calls made by the model
     if response_message.tool_calls:
         available_functions = {
-            'service_testimonial': service_testimonial,
-            'insurance_inquiry': insurance_inquiry,
-            'service_costing': service_costing,
-            'general_question':general_question
+            'dental_services': dental_services,
+            'general_question': general_question
             }
 
     for tool_call in response_message.tool_calls:
@@ -70,28 +73,20 @@ def chat_with_llama(user_message,groq_api_key):
             st.error(f"Function '{function_name}' not found in available_functions.")
         function_args = json.loads(tool_call.function.arguments)
         print(function_args)
-        function_response = function_to_call(**function_args)
-        print("Function_ouput:",function_response)
+        retrieved_qa,results = function_to_call(**function_args)
+        print("answer:",retrieved_qa,"\n\n result:",results)
         # Add function response to the conversation
-        messages.append(
-            {
-                "role": "assistant", 
-                "content": str(function_response),
-            }
-        )
+        return retrieved_qa,results    
 
     # Second API call: Get final response from the model
-    content_response = ""
-    stream = client.chat.completions.create(model="llama3-70b-8192", messages=messages,temperature=0,stream=True)
-    for chunk in stream:
-        chunk = chunk.choices[0].delta.content
-        time.sleep(0.075)
-        if chunk:
-            content_response += chunk
-            yield chunk
-    messages.append(content_response)         
-
-
-
+    #content_response = ""
+    #stream = client.chat.completions.create(model="llama3-70b-8192", messages=messages,temperature=0,stream=True)
+    #for chunk in stream:
+    #    chunk = chunk.choices[0].delta.content
+    #    time.sleep(0.075)
+    #    if chunk:
+    #        content_response += chunk
+    #        yield chunk
+    #messages.append(content_response)         
 
 

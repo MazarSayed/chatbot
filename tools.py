@@ -4,59 +4,36 @@ def tools():
         {
             "type": "function",
             "function": {
-                "name": "service_testimonial",
-                "description": "Provides information about the dental services of the business with customer testimonials",
+                "name": "dental_services",
+                "description": "Provides information about the different dental services of the business",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "dental_services": {
+                        "dental_service": {
                             "type": "string",
-                            "description": "Name of the dental service"
-                        }
-                    },
-                    "required": ["dental_services"]  # Fixed this to match the parameter name
-                }
-            }
-        },
-        {
-            "type": "function",
-            "function": {
-                "name": "insurance_inquiry",
-                "description": "Provides information about the insurance details on dental services",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "services": {
-                            "type": "string",
-                            "description": "Type of the dental service"
+                            "description": "Name of the dental service the user is inquring about"
                         },
-                        "insurance": {
+                        "query": {
                             "type": "string",
-                            "description": "Name of the insurance"
-                        }
+                            "description": "A detailed query of the user input query"
+                        },
+                        
                     },
-                    "required": ["insurance"]  # Updated required fields
+                    "required": ["dental_service","query"]  # Fixed this to match the parameter name
                 }
-            }
-        },
-        {
-            "type": "function",
-            "function": {
-                "name": "service_costing",
-                "description": "Provides information about the cost of dental services",
             }
         },
         {
             "type": "function",
             "function": {
                 "name": "general_question",
-                "description": "Provides answers to general questions",
+                "description": "Provides answers to general questions related to the business like insurance, parking, location, patient intake and etc ",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "query": {
                             "type": "string",
-                            "description": "Any question related to the Dental Practice or any questions which doesn't suit other tools"
+                            "description": "A detailed query of the user input query"
                         }
                     },
                     "required": ["query"]

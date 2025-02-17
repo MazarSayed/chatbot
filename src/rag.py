@@ -1,16 +1,19 @@
 from groq import Groq
 import time
+from test import chat_with_llama
 
-def rag(query, retrieved_documents,groq_api_key,delay,chat_history=None):
-    Answer = "\n\n".join(retrieved_documents[0])
-
-    if chat_history is None:
-        chat_history = []
+def rag(query,groq_api_key,chat_history):
     
-    if len(chat_history) > 6:
-        recent_history = chat_history[-6:]
+    if len(chat_history) > 10:
+        recent_history = chat_history[-10:]
     else:
         recent_history = chat_history
+
+
+    retrieved_answers,retrieved_questions = chat_with_llama(query,recent_history,groq_api_key) 
+
+    Answer = "\n\n".join(retrieved_answers[0])
+
     messages = [
         {
             "role": "system",
@@ -20,7 +23,6 @@ def rag(query, retrieved_documents,groq_api_key,delay,chat_history=None):
                 "Your users will ask questions about our Dental Services and Dental Care in general. "
                 "You will be shown the user's question and the exact Answer you need to provide."
                 "Answer the user's question using the same format provided in the Answer with no changes."
-                "If the question is not related, then Answer: 'Invalid question.' "
             )
         }
     ]
@@ -47,11 +49,20 @@ def rag(query, retrieved_documents,groq_api_key,delay,chat_history=None):
         max_tokens = 4096,
         stream = True)
 
-    for chunk in response:
-        chunk = chunk.choices[0].delta.content
+    return response
+
+
+def stream_response(response_text,delay):
+    """
+    Generator that processes each chunk from the API response.
+    It extracts the token, appends it to a cumulative string,
+    and yields the token for further processing.
+    """
+    content_response = ""
+    for chunk in response_text:
+        token = chunk.choices[0].delta.content
         time.sleep(delay)
-        if chunk:
-            content_response += chunk
-            yield chunk
-    assistant_message = {"role": "assistant", "content": content_response}
-    chat_history.extend([user_message, assistant_message])        
+        if token:
+            content_response += token
+            yield token
+    
