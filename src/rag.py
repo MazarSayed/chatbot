@@ -4,8 +4,8 @@ from test import chat_with_llama
 
 def rag(query,groq_api_key,chat_history):
     
-    if len(chat_history) > 10:
-        recent_history = chat_history[-10:]
+    if len(chat_history) > 4:
+        recent_history = chat_history[-4:]
     else:
         recent_history = chat_history
 
@@ -22,6 +22,7 @@ def rag(query,groq_api_key,chat_history):
                 "Your name is Luna, you are very patient, friendly and polite. "
                 "Your users will ask questions about our Dental Services and Dental Care in general. "
                 "You will be shown the user's question and the exact Answer you need to provide."
+                "You will be given three answers, you have to provide the most appropriate one answer"
                 "Answer the user's question using the same format provided in the Answer with no changes."
             )
         }
@@ -31,7 +32,7 @@ def rag(query,groq_api_key,chat_history):
     # Create the current user message
     user_message = {
         "role": "user",
-        "content": f"Question: {query}. \n Answer : {Answer}. \n"
+        "content": f"Question: {query}. \n Answer : {retrieved_answers[0][0]}. \n Answer : {retrieved_answers[0][1]}. \n Answer : {retrieved_answers[0][2]}. \n"
     }
     messages.append(user_message)
     

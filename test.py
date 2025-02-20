@@ -41,7 +41,7 @@ def chat_with_llama(query,recent_history,groq_api_key):
     response = client.chat.completions.create(
         model="llama3-70b-8192",
         messages=messages,
-        tools=tools(),
+        tools=tools(config["services"]),
         tool_choice ="auto",
         temperature = 0,
         max_tokens = 4096,
