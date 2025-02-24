@@ -24,7 +24,6 @@ PROMPT = """You are a python data scientist. you are given tasks to complete and
 
 
 def chat_with_llama(query,recent_history,groq_api_key):
-    print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
 
     client = Groq(api_key=groq_api_key)
     messages = [
@@ -33,15 +32,14 @@ def chat_with_llama(query,recent_history,groq_api_key):
 
     user_message = {
         "role": "user",
-        "content": f"Question: {query}, pr"
+        "content": f"Question: {query}"
     }
     messages.append(user_message)
-    print(messages)
 
     response = client.chat.completions.create(
         model="llama3-70b-8192",
         messages=messages,
-        tools=tools(config["services"]),
+        tools=tools(config["services"],query,recent_history),
         tool_choice ="auto",
         temperature = 0,
         max_tokens = 4096,
@@ -49,7 +47,6 @@ def chat_with_llama(query,recent_history,groq_api_key):
 
     response_message = response.choices[0].message
     messages.append(response_message)
-    print(response_message)
 
     # Check if the model decided to use the provided function
     if not response_message.tool_calls:
@@ -73,10 +70,10 @@ def chat_with_llama(query,recent_history,groq_api_key):
             st.error(f"Function '{function_name}' not found in available_functions.")
         function_args = json.loads(tool_call.function.arguments)
         print(function_args)
-        retrieved_qa,results = function_to_call(**function_args)
-        print("answer:",retrieved_qa,"\n\n result:",results)
+        answers,question = function_to_call(**function_args)
+        print("\n\nanswer:",answers,"\n\n result:",question)
         # Add function response to the conversation
-        return retrieved_qa,results    
+        return answers,question    
 
     # Second API call: Get final response from the model
     #content_response = ""

@@ -29,17 +29,30 @@ class ChromaManager:
         )
 
     def service_get_qa(self, query,keyword, n_results=1):
-        collection = self.get_or_create_collection("list_of_QA")
+        collection = self.get_or_create_collection("Question_Answer")
         results = collection.query(
             query_texts=[query],
             n_results=n_results,
             where_document={"$contains": keyword}
         )
-        return [[entry['answer'] for sublist in results['metadatas'] for entry in sublist]],results
+
+        # Extract required lists
+        questions = results.get('documents', [[]])[0]
+        answers = [entry['answer'] for entry in results.get('metadatas', [[]])[0]]
+        distances = results.get('distances', [[]])[0]
+
+        # Filter based on distance < 1
+        #filtered_qa = [(q, a) for q, a, d in zip(questions, answers, distances) if d < 2.5]
+
+        # Extract filtered questions and answers separately
+        #filtered_questions = [q for q, _ in filtered_qa]
+        #filtered_answers = [a for _, a in filtered_qa]
+        return answers,questions
     
-    def general_get_qa(self, query,services,n_results=1):
-        collection = self.get_or_create_collection("list_of_QA")
-        
+    def general_get_qa(self, query, services, n_results=1):
+        collection = self.get_or_create_collection("Question_Answer")
+
+        # Apply filters to exclude certain services
         filter_conditions = [{"$not_contains": s} for s in services]
 
         results = collection.query(
@@ -48,7 +61,20 @@ class ChromaManager:
             where_document={"$and": filter_conditions}
         )
 
-        return [[entry['answer'] for sublist in results['metadatas'] for entry in sublist]], results
+        # Extract required lists
+        questions = results.get('documents', [[]])[0]
+        answers = [entry['answer'] for entry in results.get('metadatas', [[]])[0]]
+        distances = results.get('distances', [[]])[0]
+
+        # Filter based on distance < 1
+        #filtered_qa = [(q, a) for q, a, d in zip(questions, answers, distances) if d < 2.5]
+
+        # Extract filtered questions and answers separately
+        #filtered_questions = [q for q, _ in filtered_qa]
+        #filtered_answers = [a for _, a in filtered_qa]
+        
+        return answers,questions
+
 
     
     def get_all_documents(self, collection_name):
@@ -60,7 +86,7 @@ class ChromaManager:
         return [json.loads(doc) for doc in results['documents']]
 
     def add_question_answer(self, question, answer):
-        self.add_qa("list_of_QA", question, {"answer": answer})
+        self.add_qa("Question_Answer", question, {"answer": answer})
 
 
 

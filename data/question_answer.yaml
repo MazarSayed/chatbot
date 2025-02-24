@@ -30,7 +30,7 @@
   answer : | 
     Yes, we do.
 
-- question : Are you in-network with XXX insurance? 
+- question : Are you in-network with Dental insurance? 
   answer : |  
     While we are out-of-network with all insurance providers, we want to assure you that our patients often choose us for the exceptional quality of care and service we provide.  
     We currently serve over 2,000 patients from the Greater Boston area. Our practice prides itself on delivering unparalleled dental experiences, which many of our patients find well worth the investment. 
@@ -62,7 +62,9 @@
   answer : |
       With over 5,000 smiles transformed, our Invisalign® Certified Providers are here to help you achieve the smile you've always wanted. Whether it's simple straightening or addressing complex issues like crowded teeth, crossbite, underbite, open bite, or overbite, Invisalign offers a solution.  
 
-      Good to Know: if you or your family have an HSA or FSA account, we'd highly recommend you check with your administrator regarding coverage. Invisalign is usually considered an eligible expense under most HSA or FSA plans. This allows you to use tax-free dollars to cover partial or full out-of-pocket amount. We will be happy to provide any documentation needed for reimbursement. 
+      **Good to Know**: if you or your family have an HSA or FSA account, we'd highly recommend you check with your administrator regarding coverage. Invisalign is usually considered an eligible expense under most HSA or FSA plans. This allows you to use tax-free dollars to cover partial or full out-of-pocket amount. We will be happy to provide any documentation needed for reimbursement. 
+
+      **Special Offer : No Interest for 6 Months!** Pay the out-of-pocket portion over 3 months with 0% interest. Book your free consultation today and begin your journey to a confident, straighter smile! Click [here](https://www.google.com) to learn more.
 
 - question : How much does Invisalign treatment cost ? 
   answer : |
@@ -70,7 +72,7 @@
 
       To give you some idea about fees, we have detailed cost breakdowns from some of the cases we've treated. Would you like to see an detailed example?     
 
-- question : Yes, pr (A detailed example cost of Invisalign)?
+- question : Yes (A detailed example cost of Invisalign)?
   answer : |
       Example: Milana (random name used here to protect patient privacy) is a 14-year-old student and actress from Newton, MA. 
 
@@ -80,6 +82,9 @@
 
       We can provide you with more details or even a preliminary estimate during a consultation. Would you like to schedule a free consultation with us? 
 
+- question : No (A detailed example cost of Invisalign)?
+  answer : |
+      Our team would be happy to do an evaluation and provide more accurate cost estimate for you. Would you like to book a free consultation?
 
 - question : Will my insurance cover Invisalign treatment? 
   answer : | 
@@ -128,3 +133,12 @@
 - question : What is the first available appointment?  
   answer : |  
     To find out the first available appointment, please fill out the Appointment Request form. Our Office Manager will contact you at your convenience to set up the appointment. Let's get you scheduled! 
+
+- question: Yes, book a free consultation.
+  answer : |
+    Fill the following form for consultation:
+
+
+- question: Yes, schedule an appointment.
+  answer : |
+    Fill the following form for consultation:          

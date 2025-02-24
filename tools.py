@@ -2,13 +2,14 @@ from src.utils.config import load_config
 
 config,prompt = load_config()
 
-def tools(services):
+def tools(services,query,history):
+    print(f"\n{'='*50}\n recent history: {history[-2]}\n{'='*50}")
     mytools=[
         {
             "type": "function",
             "function": {
                 "name": "dental_services",
-                "description": "Provides information only about the following the dental services = {}".format(services),
+                "description": """Provides Information only regarding dental services that helps your teeth, for example - {}, if no dental service is provided do no call this function """.format(services),
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -16,13 +17,13 @@ def tools(services):
                             "type": "string",
                             "description": "Name of the dental service the user is inquring about"
                         },
-                        "user_message": {
+                        "user_query": {
                             "type": "string",
-                            "description": "The exact user input query, do not summarize the user input"
+                            "description": "user_query = {} ".format(query)
                         },
                         
                     },
-                    "required": ["dental_service","user_message"]  # Fixed this to match the parameter name
+                    "required": ["dental_service","user_query"] 
                 }
             }
         },
@@ -30,16 +31,16 @@ def tools(services):
             "type": "function",
             "function": {
                 "name": "general_question",
-                "description": "Provides answers to general questions related to the business like insurance, parking, location, patient intake and etc ",
+                "description": """Provides information regarding dental services related to Insurance, parking, location, patient intake and etc """,
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "user_message": {
+                        "user_query": {
                             "type": "string",
-                            "description": "The exact user input query, do not summarize the user input"
+                            "description": "user_query = {} ".format(query)
                         }
                     },
-                    "required": ["user_message"]
+                    "required": ["user_query"]
                 }
             }
         }

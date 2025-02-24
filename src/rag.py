@@ -4,15 +4,16 @@ from test import chat_with_llama
 
 def rag(query,groq_api_key,chat_history):
     
-    if len(chat_history) > 4:
-        recent_history = chat_history[-4:]
+    if len(chat_history) > 6:
+        recent_history = chat_history[-6:]
     else:
         recent_history = chat_history
 
+    print(f"\n{'='*50}\n all_history: {recent_history}\n{'='*50}")
 
-    retrieved_answers,retrieved_questions = chat_with_llama(query,recent_history,groq_api_key) 
+    answers,questions = chat_with_llama(query,recent_history,groq_api_key) 
 
-    Answer = "\n\n".join(retrieved_answers[0])
+    Answer = "\n\n".join(answers)
 
     messages = [
         {
@@ -21,9 +22,10 @@ def rag(query,groq_api_key,chat_history):
                 "You are a helpful virtual dental concierge for a Dental Care Website owned by Loop Intelligence. "
                 "Your name is Luna, you are very patient, friendly and polite. "
                 "Your users will ask questions about our Dental Services and Dental Care in general. "
-                "You will be shown the user's question and the exact Answer you need to provide."
-                "You will be given three answers, you have to provide the most appropriate one answer"
-                "Answer the user's question using the same format provided in the Answer with no changes."
+                "You will be given three question & answer pairs, you have find the matching QUESTION and use it's ANSWER"
+                "Use the same format in the One Most Appropriate Answer"
+                "Find the Question that is most matching and Output the Answer of the Matching Question."
+                "Note: Provide only the Answer"
             )
         }
     ]
@@ -32,16 +34,21 @@ def rag(query,groq_api_key,chat_history):
     # Create the current user message
     user_message = {
         "role": "user",
-        "content": f"Question: {query}. \n Answer : {retrieved_answers[0][0]}. \n Answer : {retrieved_answers[0][1]}. \n Answer : {retrieved_answers[0][2]}. \n"
+        "content": f""" 
+                        Question 1:{questions[0]} Answer 1: {answers[0]}. \n 
+                        Question 2:{questions[1]} Answer 2: {answers[1]}. \n 
+                        Question 3:{questions[2]} Answer 3: {answers[2]}. \n
+                        Find the Question that is most matching and Output the Answer of the Matching Question.
+                        My Question: {query}
+                        """
     }
     messages.append(user_message)
     
     print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
-    print(f"\n{'='*50}\n Answer : {Answer}\n{'='*50}")
+    print(f"\n{'='*50}\n Answer : {answers}\n{'='*50}")
 
 
     client = Groq(api_key=groq_api_key)
-    content_response = ""
 
     response = client.chat.completions.create(
         model="llama3-70b-8192",

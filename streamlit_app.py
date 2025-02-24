@@ -43,14 +43,14 @@ chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
 populate_chroma_db(chroma_manager)
 groq_api_key = st.text_input("Groq API Key", type="password")
 response_text = ""
-retrieved_qa = chroma_manager.general_get_qa("Hi",config["services"],1)
+answers, questions = chroma_manager.general_get_qa("Hi",config["services"],1)
 
 if not groq_api_key:
     st.info("Please add your Groq API key to continue.", icon="🗝️")
 else:
     # Initialize session state for messages and chat_history.
     if "messages" not in st.session_state or st.sidebar.button("Clear conversation history"):
-        st.session_state["messages"] = [{"role": "assistant", "content": retrieved_qa[0][0][0]}]
+        st.session_state["messages"] = [{"role": "assistant", "content": answers[0]}]
         st.session_state["chat_history"] = []  
 
 
