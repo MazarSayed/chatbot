@@ -19,7 +19,7 @@
       ]
     }
   },
-  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo apt install -y sqlite3 libsqlite3-dev && sudo xargs apt install -y < packages.txt; [ -f requirements.txt ] && pip3 install -r requirements.txt; pip3 install chromadb==0.3.29 streamlit; echo '✅ Packages installed and Requirements met'",
+  "updateContentCommand": "[ -f packages.txt ] && sudo apt update && sudo apt upgrade -y && sudo apt install -y wget build-essential libreadline-dev libncurses5-dev libssl-dev libffi-dev && wget https://www.sqlite.org/2023/sqlite-autoconf-3430100.tar.gz -O sqlite.tar.gz && tar -xzf sqlite.tar.gz && cd sqlite-autoconf-3430100 && ./configure --prefix=/usr/local && make -j4 && sudo make install && cd .. && rm -rf sqlite.tar.gz sqlite-autoconf-3430100; [ -f requirements.txt ] && pip3 install -r requirements.txt; pip3 install streamlit; echo '✅ Packages installed and Requirements met'",
   "postAttachCommand": {
     "server": "streamlit run streamlit_app.py --server.enableCORS false --server.enableXsrfProtection false"
   },
