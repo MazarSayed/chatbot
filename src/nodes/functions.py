@@ -8,6 +8,8 @@ def dental_services(dental_service: str,user_query:str)->str:
     chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
     if dental_service in config["services"]:
         answers,questions = chroma_manager.service_get_qa(user_query,dental_service,3)
+    elif dental_service == '':
+        answers,questions = general_question(user_query)
     else:
         answers =[[f"""Thank you for considering us for your dental needs! Unfortunately, 
             we do not currently offer {dental_service}. However, our dentists have an excellent network of specialists in this specialty. 

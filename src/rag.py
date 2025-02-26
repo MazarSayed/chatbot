@@ -24,8 +24,10 @@ def rag(query,groq_api_key,chat_history):
                 "Your users will ask questions about our Dental Services and Dental Care in general. "
                 "You will be given three question & answer pairs, you have find the matching QUESTION and use it's ANSWER"
                 "Use the same format in the One Most Appropriate Answer"
-                "Find the Question that is most matching and Output the Answer of the Matching Question."
+                "If Answer not found, without using any of the answer , guide the user to fill the Appointment Request Form to be connected with practice front office"
+                "Never mention the answer was not found in our database"
                 "Note: Provide only the Answer"
+                
             )
         }
     ]
@@ -38,7 +40,10 @@ def rag(query,groq_api_key,chat_history):
                         Question 1:{questions[0]} Answer 1: {answers[0]}. \n 
                         Question 2:{questions[1]} Answer 2: {answers[1]}. \n 
                         Question 3:{questions[2]} Answer 3: {answers[2]}. \n
-                        Find the Question that is most matching and Output the Answer of the Matching Question.
+                        Find the Question that is most matching and Output the Answer of the Matching Question.\n
+                        If Answer not found, without using any of the answer , 
+                        guide the me to fill the Appointment Request Form to be connected with practice front office.\n
+
                         My Question: {query}
                         """
     }

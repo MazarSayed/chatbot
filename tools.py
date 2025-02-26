@@ -9,7 +9,7 @@ def tools(services,query,history):
             "type": "function",
             "function": {
                 "name": "dental_services",
-                "description": """Provides Information only regarding dental services that helps your teeth, for example - {}, if no dental service is provided do no call this function """.format(services),
+                "description": """Provides Information only regarding dental services = {} and similar dental services which helps the teeth""".format(services),
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -31,7 +31,7 @@ def tools(services,query,history):
             "type": "function",
             "function": {
                 "name": "general_question",
-                "description": """Provides information regarding dental services related to Insurance, parking, location, patient intake and etc """,
+                "description": """Do Not call this function """,
                 "parameters": {
                     "type": "object",
                     "properties": {

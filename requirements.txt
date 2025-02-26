@@ -6,3 +6,4 @@ streamlit
 langchain_community
 groq
 chromadb
+streamlit_autorefresh
