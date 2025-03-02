@@ -49,7 +49,7 @@ class ChromaManager:
         # Extract required lists
         questions = results.get('documents', [[]])[0]
         answers = [entry['answer'] for entry in results.get('metadatas', [[]])[0]]
-        distances = results.get('distances', [[]])[0]
+        buttons = [entry['buttons'] for entry in results.get('metadatas', [[]])[0]]
         return answers, questions
 
     def general_get_qa(self, query, services, n_results=1):
@@ -63,7 +63,7 @@ class ChromaManager:
             )
         questions = results.get('documents', [[]])[0]
         answers = [entry['answer'] for entry in results.get('metadatas', [[]])[0]]
-        distances = results.get('distances', [[]])[0]
+        buttons = [entry['buttons'] for entry in results.get('metadatas', [[]])[0]]
         return answers, questions
 
     def get_all_documents(self, collection_name):
@@ -75,5 +75,5 @@ class ChromaManager:
             )
         return [json.loads(doc) for doc in results['documents']]
 
-    def add_question_answer(self, question, answer):
-        self.add_qa("Question_Answer", question, {"answer": answer})
+    def add_question_answer(self, embedding, question, answer, buttons):
+        self.add_qa("Question_Answer", question, embedding,{"answer": answer,"buttons": json.dumps(buttons)})

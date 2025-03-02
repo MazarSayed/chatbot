@@ -26,6 +26,10 @@ from streamlit_autorefresh import st_autorefresh
 config,prompt = load_config()
 load_dotenv()
 
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
+populate_chroma_db(chroma_manager)
+
 def clear_submit():
       st.session_state["submit"] = False
 
@@ -41,9 +45,6 @@ st.set_page_config(
         )  
 
 st.title("Luna: helpful virtual dental concierge")
-chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
-
-populate_chroma_db(chroma_manager)
 groq_api_key = st.text_input("Groq API Key", type="password")
 response_text = ""
 answers, questions = chroma_manager.general_get_qa("Hi",config["services"],1)
@@ -58,6 +59,7 @@ else:
 
     if "messages" not in st.session_state or clear_history:
         st.session_state["messages"] = [{"role": "assistant", "content": answers[0]}]
+        #st.session_state["messages"] = [{"role": "assistant", "content": answers[0] +"\n" + buttons[0]}]
         st.session_state["chat_history"] = []
 
     #if "last_activity" not in st.session_state or clear_history:
@@ -87,4 +89,5 @@ else:
             for token in st.write_stream(stream_response(response_text, 0.0075)):
                 full_response += token
     #    st.session_state["last_activity"] = time.time()
+        #st.write(buttons)
         st.session_state["messages"].append({"role": "assistant", "content": full_response})

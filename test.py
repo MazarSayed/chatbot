@@ -23,9 +23,8 @@ PROMPT = """You are a python data scientist. you are given tasks to complete and
 
 
 
-def chat_with_llama(query,recent_history,groq_api_key):
+def chat_with_llama(client,query,recent_history):
 
-    client = Groq(api_key=groq_api_key)
     messages = [
         {"role":"system","content": prompt["system_prompt"]}]
     messages.extend(recent_history)

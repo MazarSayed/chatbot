@@ -2,7 +2,7 @@ from groq import Groq
 import time
 from test import chat_with_llama
 
-def rag(query,groq_api_key,chat_history):
+def rag(client,query,groq_api_key,chat_history):
     
     if len(chat_history) > 6:
         recent_history = chat_history[-6:]
@@ -11,7 +11,7 @@ def rag(query,groq_api_key,chat_history):
 
     print(f"\n{'='*50}\n all_history: {recent_history}\n{'='*50}")
 
-    answers,questions = chat_with_llama(query,recent_history,groq_api_key) 
+    answers,questions = chat_with_llama(client,query,recent_history) 
 
     Answer = "\n\n".join(answers)
 

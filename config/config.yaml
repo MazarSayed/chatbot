@@ -3,7 +3,6 @@ prompt_folder_path: ./prompts/
 owner: CelestialBI Dentals
 services: ['Invisalign','Teeth Cleaning','Dental Checkup','Emergency Dental Care','Dental Implant']
 chroma_path: ./chroma_db
-key: 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
 time_out : 10
 
 inactivity_timeout : 60,  # Threshold for user inactivity (seconds)

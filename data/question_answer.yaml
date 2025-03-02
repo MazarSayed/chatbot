@@ -4,7 +4,15 @@
 
       We are a multi-specialty practice, serving the Greater Boston area for over 20 years and bringing confident smiles to thousands of families. Our team consists of American Board-Certified experts dedicated to providing top-tier dental care for both adults and children.
 
-      To better assist you today, would you please first tell me what brings you here today? 
+      To better assist you today, would you please first tell me what brings you here today?
+  buttons : 
+    Invisalign: "Invisalign"
+    Teeth Cleaning: "Teeth Cleaning"
+    Dental Checkup: "Dental Checkup"
+    Emergency Dental Care: "Emergency Dental Care"
+    Dental Implant: "Dental Implant"
+      
+
 
 - question : Do you take or accept or cover XXX Dental insurance? 
   answer : | 
@@ -15,6 +23,7 @@
       Else:
       "RESPONSE":  No we don't cover XXXX dental insurance.
       Make sure to only provide the above RESPONSE, Do not provide the User_Question.
+  buttons : 
 
 - question : I do not have insurance. What payment options do you provide? 
   answer : |  
@@ -25,10 +34,12 @@
     Additionally, you can use your FSA or HSA to pay for Invisalign treatment. We'd highly recommend you check with your administrator regarding coverage. Invisalign is usually considered an eligible expense under most HSA or FSA plans. This may help significantly reduce your out-of-pocket amount. We will be happy to provide any documentation needed for reimbursement. 
 
     Our team would be happy to do an evaluation and provide a more accurate cost estimate for you. Would you like to book a free consultation   
+  buttons : 
 
 - question : Are you accepting new patients? 
   answer : | 
     Yes, we do.
+  buttons : 
 
 - question : Are you in network with XXXX Dental insurance? 
   answer : |  
@@ -36,6 +47,7 @@
     We currently serve over 2,000 patients from the Greater Boston area. Our practice prides itself on delivering unparalleled dental experiences, which many of our patients find well worth the investment. 
     We'll work with you to maximize your insurance benefits, handle all claim submissions, and provide transparent pricing.  
     We invite you to experience the difference our dedication can make in your dental health. Simply fill out our Appointment Request Form below, and our Office Manager will reach out to set up your first appointment with us.  
+  buttons : 
 
 - question : Where is your office located? 
   answer : | 
@@ -51,10 +63,12 @@
 
     - Once at the Building: 
         - Take the stairs or elevator to the third floor. Our suite, 301, is clearly marked. 
+  buttons : 
 
 - question : Where can I park?   
   answer : |
     There's metered street parking directly in front of our building on Beacon Street or along Englewood Avenue. Look for available spots; they're usually easy to find. Remember to check the meters for time limits and have change or use a parking app if needed.    
+  buttons : 
 
 
 
@@ -65,12 +79,14 @@
       **Good to Know**: if you or your family have an HSA or FSA account, we'd highly recommend you check with your administrator regarding coverage. Invisalign is usually considered an eligible expense under most HSA or FSA plans. This allows you to use tax-free dollars to cover partial or full out-of-pocket amount. We will be happy to provide any documentation needed for reimbursement. 
 
       **Special Offer : No Interest for 6 Months!** Pay the out-of-pocket portion over 3 months with 0% interest. Book your free consultation today and begin your journey to a confident, straighter smile! Click [here](https://www.google.com) to learn more.
+  buttons : 
 
 - question : How much does Invisalign treatment cost ? 
   answer : |
       The cost of your treatment is based on how complex your case is and how many aligners you need. We have several options to make Invisalign treatment more affordable for you, from using insurance and tax-free dollars to a monthly payment plan.  
 
       To give you some idea about fees, we have detailed cost breakdowns from some of the cases we've treated. Would you like to see an detailed example?     
+  buttons : 
 
 - question : Yes (A detailed example cost of Invisalign)?
   answer : |
@@ -81,14 +97,17 @@
       The total cost was $7,000, insurance covered $5,600, Milana paid ~$233 per month for her remaining balance with a 6-month payment plan 
 
       We can provide you with more details or even a preliminary estimate during a consultation. Would you like to schedule a free consultation with us? 
+  buttons : 
 
 - question : No (A detailed example cost of Invisalign)?
   answer : |
       Our team would be happy to do an evaluation and provide more accurate cost estimate for you. Would you like to book a free consultation?
+  buttons : 
 
 - question : Will my insurance cover Invisalign treatment? 
   answer : | 
     From our experience, insurance typically covers partial of the Invisalign cost, though coverage varies based on your specific benefits plan. Our team would be happy to do an evaluation and provide a more accurate cost estimate for you. Would you like to book a free consultation 
+  buttons : 
 
 - question : My teeth are crowded, can Invisalign help me?
   answer : |  
@@ -107,14 +126,17 @@
     - Post-Treatment: After achieving the desired alignment, you might need to wear retainers to ensure your teeth stay in their new positions. 
 
     However, the suitability of Invisalign for your specific case of crowded teeth would depend on several factors such as the extent of crowding, your oral health, and any other dental issues you might have. It's important to consult with our dentist for a personalized assessment. They can evaluate your situation and determine if Invisalign is the right solution for you or if other orthodontic treatments might be necessary. 
+  buttons : 
 
 - question : Am I guaranteed to have straight teeth with Invisalign treatment? 
   answer : | 
     Every smile is unique, it's best to start with a free consultation. During your consultation, your dentist will help you determine what Invisalign treatment could do for your smile.
+  buttons : 
 
 - question : Does Invisalign hurt?
   answer : | 
     Invisalign are comfortable to wear. When you first get your aligners or when you switch to a new set, you might feel some pressure or soreness as your teeth begin to move. This is normal and usually subsides within a few days as your mouth adjusts to the aligners. 
+  buttons : 
 
 - question : What is the Invisalign treatment process?
   answer : | 
@@ -125,20 +147,24 @@
       - **Step 2 - Treatment Planning:** We use advanced digital technology to create a custom plan, showing your smile's transformation step by step. 
 
       - **Step 3 - Begin Your Journey:** With our support at every stage, enjoy a smooth journey to a more confident smile 
+  buttons : 
 
 - question : How long does Invisalign treatment take?
   answer : | 
     Depending on the complexity of your case, you could start seeing results in your treatment in as little as 6 months. 
+  buttons : 
 
 - question : What is the first available appointment?  
   answer : |  
     To find out the first available appointment, please fill out the Appointment Request form. Our Office Manager will contact you at your convenience to set up the appointment. Let's get you scheduled! 
+  buttons : 
 
 - question: Yes, book a free consultation.
   answer : |
     Fill the following form for consultation:
-
+  buttons : 
 
 - question: Yes, schedule an appointment.
   answer : |
     Fill the following form for consultation:          
+  buttons : 
