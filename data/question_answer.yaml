@@ -46,7 +46,7 @@
     While we are out of network with all insurance providers, we want to assure you that our patients often choose us for the exceptional quality of care and service we provide.  
     We currently serve over 2,000 patients from the Greater Boston area. Our practice prides itself on delivering unparalleled dental experiences, which many of our patients find well worth the investment. 
     We'll work with you to maximize your insurance benefits, handle all claim submissions, and provide transparent pricing.  
-    We invite you to experience the difference our dedication can make in your dental health. Simply fill out our Appointment Request Form below, and our Office Manager will reach out to set up your first appointment with us.  
+    We invite you to experience the difference our dedication can make in your dental health. Simply fill out our Appointment Request Form, and our Office Manager will reach out to set up your first appointment with us.  
   buttons : 
 
 - question : Where is your office located? 
@@ -78,7 +78,8 @@
 
       **Good to Know**: if you or your family have an HSA or FSA account, we'd highly recommend you check with your administrator regarding coverage. Invisalign is usually considered an eligible expense under most HSA or FSA plans. This allows you to use tax-free dollars to cover partial or full out-of-pocket amount. We will be happy to provide any documentation needed for reimbursement. 
 
-      **Special Offer : No Interest for 6 Months!** Pay the out-of-pocket portion over 3 months with 0% interest. Book your free consultation today and begin your journey to a confident, straighter smile! Click [here](https://www.google.com) to learn more.
+      **Special Offer : No Interest for 6 Months!** Pay the out-of-pocket portion over 3 months with 0% interest. Book your free consultation today and begin your journey to a confident, straighter smile! 
+      Click [here](https://www.google.com) to learn more.
   buttons : 
 
 - question : How much does Invisalign treatment cost ? 
@@ -97,13 +98,13 @@
       The total cost was $7,000, insurance covered $5,600, Milana paid ~$233 per month for her remaining balance with a 6-month payment plan 
 
       We can provide you with more details or even a preliminary estimate during a consultation. Would you like to schedule a free consultation with us? 
-  buttons : 
+  buttons :   
 
-- question : No (A detailed example cost of Invisalign)?
+- question : No , No need for more details or even a preliminary estimate?
   answer : |
-      Our team would be happy to do an evaluation and provide more accurate cost estimate for you. Would you like to book a free consultation?
+      No problem. Feel free to let us know whenever you are ready to schedule the consultation with us.
   buttons : 
-
+  
 - question : Will my insurance cover Invisalign treatment? 
   answer : | 
     From our experience, insurance typically covers partial of the Invisalign cost, though coverage varies based on your specific benefits plan. Our team would be happy to do an evaluation and provide a more accurate cost estimate for you. Would you like to book a free consultation 
@@ -162,9 +163,58 @@
 - question: Yes, book a free consultation.
   answer : |
     Fill the following form for consultation:
+
+      Name: 
+
+      Phone: 
+
+      Email: 
+
+      Preferred Time: Morning / Afternoon 
+
+      Preferred Date: Mon, Tue, Wed, Thu, Fri 
+
+      Special Note:  
+
+ 
   buttons : 
 
 - question: Yes, schedule an appointment.
   answer : |
-    Fill the following form for consultation:          
+    Fill the following form for consultation:
+    
+      Name: 
+
+      Phone: 
+
+      Email: 
+
+      Preferred Time: Morning / Afternoon 
+
+      Preferred Date: Mon, Tue, Wed, Thu, Fri 
+
+      Special Note:          
   buttons : 
+
+- question: How many people have used Invisalign® clear aligners? 
+  answer : |
+    Over 18 million people, including more than 5 million teens have used Invisalign clear aligners to transform their smiles.           
+  buttons : 
+
+- question: Can anyone tell that I’m wearing aligners? 
+  answer : |
+    Invisalign® aligners are virtually invisible. Others may not even notice you’re wearing them, making Invisalign treatment a seamless fit with your lifestyle. 
+  buttons : 
+ 
+- question: Can I take my aligners off whenever I need to? 
+  answer : |
+      Yes, you can remove your Invisalign aligners for eating, drinking, brushing, and flossing. You can take them off for special occasions, like a wedding, job interview, or for playing your favorite sport or instrument. But typically, people wear their Invisalign aligners 20 to 22 hours a day to get the best results. 
+  buttons : 
+ 
+- question: Will I need to wear a retainer after treatment to prevent my teeth from moving again? 
+  answer : |
+      We often recommend anyone who has completed orthodontic treatment use a retainer to prevent teeth from gradually shifting back toward their initial position. But every case is different, our dentist will be able to suggest you based on your specific case. 
+  buttons : 
+
+
+

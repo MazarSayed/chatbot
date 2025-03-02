@@ -31,7 +31,7 @@ def tools(services,query,history):
             "type": "function",
             "function": {
                 "name": "general_question",
-                "description": """Do Not call this function """,
+                "description": """Provides infromation regarding general dental services like parking, location, etc""",
                 "parameters": {
                     "type": "object",
                     "properties": {

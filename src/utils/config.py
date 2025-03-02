@@ -4,6 +4,45 @@ from typing import Dict,Any
 import os
 import logging
 from pathlib import Path
+from sentence_transformers import SentenceTransformer
+
+class EmbeddingModel:
+    _instance = None
+    _model = None
+    _cache = {}  # Cache for embeddings
+
+    @classmethod
+    def get_instance(cls):
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+
+    def __init__(self):
+        if EmbeddingModel._model is None:
+            logging.info("Loading embedding model...")
+            # Use a smaller, faster model
+            EmbeddingModel._model = SentenceTransformer('all-MiniLM-L6-v2')
+            logging.info("Embedding model loaded successfully")
+
+    def get_embedding(self, text):
+        # Handle both single text and list of texts
+        if isinstance(text, str):
+            # Check cache for single text
+            if text in self._cache:
+                return self._cache[text]
+            embedding = self._model.encode(text, normalize_embeddings=True)
+            self._cache[text] = embedding
+            return embedding
+        else:
+            # For list of texts, filter out cached ones
+            uncached_texts = [t for t in text if t not in self._cache]
+            if uncached_texts:
+                new_embeddings = self._model.encode(uncached_texts, normalize_embeddings=True, batch_size=32)
+                # Update cache with new embeddings
+                for t, emb in zip(uncached_texts, new_embeddings):
+                    self._cache[t] = emb
+            # Return embeddings for all texts (from cache or newly computed)
+            return [self._cache[t] for t in text]
 
 def load_yaml(file_path):
     with open(file_path,'r') as stream:
@@ -42,21 +81,22 @@ def load_question_answer():
     return question_answer
 
 # Function to populate Chroma DB with examples
-def populate_chroma_db(client, chroma_manager):
+def populate_chroma_db(chroma_manager):
     logging.info("Populating Chroma DB with qa's...")
     question_answer = load_question_answer()
-
-    for qa in question_answer:
-        embedding = get_embedding(client, qa["question"])
-        chroma_manager.add_question_answer(embedding,qa["question"], qa["answer"], qa["buttons"])
-        logging.debug(f"Added question-plan example: {qa['question']}")
-
+    
+    # Use singleton model instance
+    model = EmbeddingModel.get_instance()
+    
+    # Prepare data for batch processing
+    questions = [qa["question"] for qa in question_answer]
+    answers = [qa["answer"] for qa in question_answer]
+    buttons_list = [qa["buttons"] for qa in question_answer]
+    
+    # Get embeddings for all questions at once
+    embeddings = model.get_embedding(questions)
+    
+    # Add all QAs in a single batch
+    chroma_manager.batch_add_question_answers(embeddings, questions, answers)
+    
     logging.info("Chroma DB populated")
-
-
-def get_embedding(client,text):
-    response = client.embeddings.create(
-        model="llama2-70b-4096",
-        input=text
-    )
-    return response.data[0].embedding            

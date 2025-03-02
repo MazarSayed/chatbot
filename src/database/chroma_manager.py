@@ -5,6 +5,7 @@ import yaml
 import os
 import threading
 import time
+import numpy as np
 
 os.environ["CHROMADB_SQLITE_JOURNAL_MODE"] = "WAL"
 os.environ["CHROMADB_SQLITE_TIMEOUT"] = "30"
@@ -36,34 +37,28 @@ class ChromaManager:
                 ids=[id]
             )
 
-    def service_get_qa(self, query, keyword, n_results=1):
+    def service_get_qa(self, query_embedding, keyword, n_results=1):
         collection = self.get_or_create_collection("Question_Answer")
-        # Reads typically don't lock the DB as much,
-        # but if you still experience locking, you can wrap in a lock.
         with self.db_lock:
             results = collection.query(
-                query_texts=[query],
+                query_embeddings=[query_embedding.tolist()],
                 n_results=n_results,
-                # where_document={"$contains": keyword}
             )
-        # Extract required lists
         questions = results.get('documents', [[]])[0]
         answers = [entry['answer'] for entry in results.get('metadatas', [[]])[0]]
-        buttons = [entry['buttons'] for entry in results.get('metadatas', [[]])[0]]
         return answers, questions
 
-    def general_get_qa(self, query, services, n_results=1):
+    def general_get_qa(self, query_embedding, services, n_results=1):
         collection = self.get_or_create_collection("Question_Answer")
         filter_conditions = [{"$not_contains": s} for s in services]
         with self.db_lock:
             results = collection.query(
-                query_texts=[query],
-                n_results=n_results,
+                query_embeddings=[query_embedding.tolist()],
+                n_results=n_results,                
                 where_document={"$and": filter_conditions}
             )
         questions = results.get('documents', [[]])[0]
         answers = [entry['answer'] for entry in results.get('metadatas', [[]])[0]]
-        buttons = [entry['buttons'] for entry in results.get('metadatas', [[]])[0]]
         return answers, questions
 
     def get_all_documents(self, collection_name):
@@ -75,5 +70,29 @@ class ChromaManager:
             )
         return [json.loads(doc) for doc in results['documents']]
 
-    def add_question_answer(self, embedding, question, answer, buttons):
+    def add_question_answer(self, embedding, question, answer,buttons):
         self.add_qa("Question_Answer", question, embedding,{"answer": answer,"buttons": json.dumps(buttons)})
+
+    def batch_add_question_answers(self, embeddings, questions, answers):
+        """Add multiple QA pairs to the database in batches."""
+        collection = self.get_or_create_collection("Question_Answer")
+        
+        # Process in batches
+        batch_size = 100
+        for i in range(0, len(questions), batch_size):
+            end_idx = min(i + batch_size, len(questions))
+            batch_embeddings = [emb.tolist() for emb in embeddings[i:end_idx]]
+            batch_questions = questions[i:end_idx]
+            batch_answers = answers[i:end_idx]
+            
+            with self.db_lock:
+                try:
+                    collection.add(
+                        embeddings=batch_embeddings,
+                        documents=batch_questions,
+                        metadatas=[{"answer": ans} for ans in batch_answers],
+                        ids=[str(collection.count() + j + 1) for j in range(len(batch_questions))]
+                    )
+                    print(f"Added batch of {len(batch_questions)} items")
+                except Exception as e:
+                    print(f"Error adding batch: {e}")
