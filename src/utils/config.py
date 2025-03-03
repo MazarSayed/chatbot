@@ -91,12 +91,12 @@ def populate_chroma_db(chroma_manager):
     # Prepare data for batch processing
     questions = [qa["question"] for qa in question_answer]
     answers = [qa["answer"] for qa in question_answer]
-    buttons_list = [qa["buttons"] for qa in question_answer]
+    buttons_list = [qa.get("buttons", {}) for qa in question_answer]  # Use get() with default empty dict
     
     # Get embeddings for all questions at once
     embeddings = model.get_embedding(questions)
     
-    # Add all QAs in a single batch
-    chroma_manager.batch_add_question_answers(embeddings, questions, answers)
+    # Add all QAs in a single batch, including buttons
+    chroma_manager.batch_add_question_answers(embeddings, questions, answers, buttons_list)
     
     logging.info("Chroma DB populated")

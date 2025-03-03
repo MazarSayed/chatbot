@@ -14,6 +14,7 @@ import threading
 import time
 from src.utils.config import EmbeddingModel
 from streamlit_autorefresh import st_autorefresh
+from src.nodes.functions import general_question
 
 #__import__('pysqlite3')
 #import sys
@@ -48,23 +49,24 @@ st.set_page_config(
 st.title("Luna: helpful virtual dental concierge")
 #groq_api_key = st.text_input("Groq API Key", type="password")
 response_text = ""
-
 model = EmbeddingModel.get_instance()
-query_embedding = model.get_embedding("Hi")
-answers, questions = chroma_manager.general_get_qa(query_embedding, config["services"], 1)[:2]  # Only get first two return values
 
 if not groq_api_key:
     st.info("Please add your Groq API key to continue.", icon="🗝️")
 else:
-    #st_autorefresh(interval=20000, key="inactivity_autorefresh")
-
     clear_history = st.sidebar.button("Clear conversation history")
 
     if "messages" not in st.session_state or clear_history:
-        # Initialize with the full answer including buttons
-        initial_message = answers[0]
-        st.session_state["messages"] = [{"role": "assistant", "content": initial_message}]
+        # Get initial greeting
+        #response_text, final_buttons = rag(client, "Hi", groq_api_key, [])
+        answers, questions, buttons = general_question("Hi")
+        print(answers[0])
+        # Set default greeting if no answer is found
+        st.session_state["messages"] = [{"role": "assistant", "content": answers [0]}]
         st.session_state["chat_history"] = []
+        #st.session_state["buttons"] = [final_buttons]
+        
+        # Print buttons in the frontend
 
     #if "last_activity" not in st.session_state or clear_history:
     #    st.session_state["last_activity"] = time.time()
@@ -80,15 +82,11 @@ else:
     #    st.session_state["last_activity"] = time.time()  # Reset timer after sending prompt
 
     # Display chat messages
+    
     for msg in st.session_state["messages"]:
         content = msg["content"]
-        if isinstance(content, list):
-            content = content[0]
-        if isinstance(content, str):
-            # Remove any leading/trailing quotes and brackets if it's a string representation of a list
-            if content.startswith('["') and content.endswith('"]'):
-                content = content[2:-2]
-        st.chat_message(msg["role"]).markdown(content)
+        st.chat_message(msg["role"]).write(content)
+        #st.write(btn)   # Print the final answer in the frontend after it is generated
 
     # Handle user input
     if query := st.chat_input(placeholder="How can I help you?"):
@@ -98,10 +96,11 @@ else:
 
         with st.chat_message("assistant"):
             query_embedding = model.get_embedding(query)
-            response_text = rag(client, query, groq_api_key, st.session_state["messages"])
+            response_text, final_buttons = rag(client, query, groq_api_key, st.session_state["messages"])
             full_response = ""
             for token in st.write_stream(stream_response(response_text, 0.0075)):
                 full_response += token
     #    st.session_state["last_activity"] = time.time()
-        #st.write(buttons)
         st.session_state["messages"].append({"role": "assistant", "content": full_response})
+        #st.session_state["buttons"].append(final_buttons)
+

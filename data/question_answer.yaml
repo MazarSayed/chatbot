@@ -1,4 +1,4 @@
-- question : Hi!, Hello !, Who are you ?
+- question : Hi!
   answer : |
       Hello! Welcome to Brookline Progressive Dental Team. I'm Luna, your dedicated smile concierge, here to help you find the perfect dental care just for you.
 
@@ -41,7 +41,7 @@
     Yes, we do.
   buttons : 
 
-- question : Are you in network with XXXX Dental insurance? 
+- question : Are you in network with XXXX Dental insurance, user inquiring about being in-network ? 
   answer : |  
     While we are out of network with all insurance providers, we want to assure you that our patients often choose us for the exceptional quality of care and service we provide.  
     We currently serve over 2,000 patients from the Greater Boston area. Our practice prides itself on delivering unparalleled dental experiences, which many of our patients find well worth the investment. 
@@ -74,27 +74,26 @@
 
 - question : Invisalign 
   answer : |
-      With over 5,000 smiles transformed, our Invisalign® Certified Providers are here to help you achieve the smile you've always wanted. Whether it's simple straightening or addressing complex issues like crowded teeth, crossbite, underbite, open bite, or overbite, Invisalign offers a solution.  
+      With over 5,000 smiles transformed, our Invisalign® Certified Providers are here to help you achieve the smile you've always wanted. Whether it's simple straightening or addressing complex issues like crowded teeth, crossbite, underbite, open bite, or overbite, Invisalign offers a solution.
 
       **Good to Know**: if you or your family have an HSA or FSA account, we'd highly recommend you check with your administrator regarding coverage. Invisalign is usually considered an eligible expense under most HSA or FSA plans. This allows you to use tax-free dollars to cover partial or full out-of-pocket amount. We will be happy to provide any documentation needed for reimbursement. 
 
       **Special Offer : No Interest for 6 Months!** Pay the out-of-pocket portion over 3 months with 0% interest. Book your free consultation today and begin your journey to a confident, straighter smile! 
       Click [here](https://www.google.com) to learn more.
-
   buttons : 
       Cost of Invisalign : "How much does Invisalign treatment cost ?"
 
-- question : How much does Invisalign treatment cost ? 
+- question : Cost of Invisalign
   answer : |
       The cost of your treatment is based on how complex your case is and how many aligners you need. We have several options to make Invisalign treatment more affordable for you, from using insurance and tax-free dollars to a monthly payment plan.  
 
       To give you some idea about fees, we have detailed cost breakdowns from some of the cases we've treated. Would you like to see an detailed example?     
   buttons : 
-       Yes : "Yes, provide a detailed example cost of Invisalign"
-       No  : "No,  I don't need a detailed example cost of Invisalign"
+       "Yes" : "Yes, provide a detailed example cost of Invisalign"
+       "No"  : "No,  I don't need a detailed example cost of Invisalign"
 
 
-- question : Yes (provide a detailed example cost of Invisalign)?
+- question : Yes, Provide a detailed cost breakdown for Invisalign treatment ?
   answer : |
       Example: Milana (random name used here to protect patient privacy) is a 14-year-old student and actress from Newton, MA. 
 
@@ -104,27 +103,33 @@
 
       We can provide you with more details or even a preliminary estimate during a consultation. Would you like to schedule a free consultation with us? 
   buttons :   
-       Yes : "Yes, schedule a consultation."
-       No  : "No, I don't need to shedule a consultation."
+       "Yes" : "Yes, schedule a consultation."
+       "No"  : "No, I don't need to shedule a consultation."
 
 - question : No (I don't need a detailed example cost of Invisalign)
   answer : |
       Our team would be happy to do an evaluation and provide more accurate cost estimate for you. Would you like to book a free consultation?
   buttons :   
-       Yes : "Yes, schedule a consultation."
-       No  : "No, I don't need to shedule a consultation."    
+       "Yes" : "Yes, schedule a consultation."
+       "No"  : "No, I don't need to shedule a consultation."    
 
 - question : No , I don't need to shedule a consultation or appointment.
   answer : |
       No problem. Feel free to let us know whenever you are ready to schedule the consultation with us.
   buttons : 
   
+
+- question : User declined the consultation offer
+  answer : |
+      No problem. Feel free to let us know whenever you are ready to schedule the consultation with us.
+  buttons : 
+
 - question : Will my insurance cover Invisalign treatment? 
   answer : | 
     From our experience, insurance typically covers partial of the Invisalign cost, though coverage varies based on your specific benefits plan. Our team would be happy to do an evaluation and provide a more accurate cost estimate for you. Would you like to book a free consultation ?
   buttons :   
-       Yes : "Yes, schedule a consultation."
-       No  : "No, I don't need to shedule a consultation."   
+       "Yes" : "Yes, schedule a consultation."
+       "No"  : "No, I don't need to shedule a consultation."   
 
 - question : My teeth are crowded, can Invisalign help me?
   answer : |  
@@ -283,3 +288,20 @@
   answer: |
     Invisalign treatment typically is comparable in cost as braces
   buttons:
+
+- question : How will Invisalign treatment straighten my teeth? 
+  answer: |
+    Here's how it works: 
+
+    - **Custom Aligners:** Invisalign uses a series of clear, custom-made aligners that are changed approximately every one to two weeks. Each set of aligners moves your teeth incrementally to their desired position. 
+    
+    - **3D Imaging Technology:** Before treatment, your dentist will use 3D imaging to create a precise treatment plan, showing how your teeth will move from start to finish. 
+
+    - **Comfort and Aesthetics:** The aligners are made of smooth, BPA-free plastic, making them more comfortable than traditional braces. They are also virtually invisible, which is a significant aesthetic advantage. 
+
+    - **Treatment Time:** The duration of treatment for crowded teeth can vary depending on the severity, but many cases see significant improvement within 12 to 18 months. 
+
+    - **Maintenance:** You'll need to wear the aligners for most of the day (about 20-22 hours), removing them only to eat, drink (except water), brush, and floss. 
+    
+    - **Post-Treatment:** After achieving the desired alignment, you might need to wear retainers to ensure your teeth stay in their new positions. 
+  buttons:  
