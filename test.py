@@ -69,10 +69,10 @@ def chat_with_llama(client,query,recent_history):
             st.error(f"Function '{function_name}' not found in available_functions.")
         function_args = json.loads(tool_call.function.arguments)
         print(function_args)
-        answers,question = function_to_call(**function_args)
-        print("\n\nanswer:",answers,"\n\n result:",question)
+        answers, questions, buttons = function_to_call(**function_args)
+        print("\n\nanswer:", answers, "\n\n result:", questions, "\n\n buttons:", buttons)
         # Add function response to the conversation
-        return answers,question    
+        return answers, questions, buttons
 
     # Second API call: Get final response from the model
     #content_response = ""

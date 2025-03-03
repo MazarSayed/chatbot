@@ -6,7 +6,7 @@
 
       To better assist you today, would you please first tell me what brings you here today?
   buttons : 
-    Invisalign: "Invisalign"
+    Invisalign: "Invisalign Service"
     Teeth Cleaning: "Teeth Cleaning"
     Dental Checkup: "Dental Checkup"
     Emergency Dental Care: "Emergency Dental Care"
@@ -80,7 +80,9 @@
 
       **Special Offer : No Interest for 6 Months!** Pay the out-of-pocket portion over 3 months with 0% interest. Book your free consultation today and begin your journey to a confident, straighter smile! 
       Click [here](https://www.google.com) to learn more.
+
   buttons : 
+      Cost of Invisalign : "How much does Invisalign treatment cost ?"
 
 - question : How much does Invisalign treatment cost ? 
   answer : |
@@ -88,8 +90,11 @@
 
       To give you some idea about fees, we have detailed cost breakdowns from some of the cases we've treated. Would you like to see an detailed example?     
   buttons : 
+       Yes : "Yes, provide a detailed example cost of Invisalign"
+       No  : "No,  I don't need a detailed example cost of Invisalign"
 
-- question : Yes (A detailed example cost of Invisalign)?
+
+- question : Yes (provide a detailed example cost of Invisalign)?
   answer : |
       Example: Milana (random name used here to protect patient privacy) is a 14-year-old student and actress from Newton, MA. 
 
@@ -99,16 +104,27 @@
 
       We can provide you with more details or even a preliminary estimate during a consultation. Would you like to schedule a free consultation with us? 
   buttons :   
+       Yes : "Yes, schedule a consultation."
+       No  : "No, I don't need to shedule a consultation."
 
-- question : No , No need for more details or even a preliminary estimate?
+- question : No (I don't need a detailed example cost of Invisalign)
+  answer : |
+      Our team would be happy to do an evaluation and provide more accurate cost estimate for you. Would you like to book a free consultation?
+  buttons :   
+       Yes : "Yes, schedule a consultation."
+       No  : "No, I don't need to shedule a consultation."    
+
+- question : No , I don't need to shedule a consultation or appointment.
   answer : |
       No problem. Feel free to let us know whenever you are ready to schedule the consultation with us.
   buttons : 
   
 - question : Will my insurance cover Invisalign treatment? 
   answer : | 
-    From our experience, insurance typically covers partial of the Invisalign cost, though coverage varies based on your specific benefits plan. Our team would be happy to do an evaluation and provide a more accurate cost estimate for you. Would you like to book a free consultation 
-  buttons : 
+    From our experience, insurance typically covers partial of the Invisalign cost, though coverage varies based on your specific benefits plan. Our team would be happy to do an evaluation and provide a more accurate cost estimate for you. Would you like to book a free consultation ?
+  buttons :   
+       Yes : "Yes, schedule a consultation."
+       No  : "No, I don't need to shedule a consultation."   
 
 - question : My teeth are crowded, can Invisalign help me?
   answer : |  
@@ -201,9 +217,9 @@
     Over 18 million people, including more than 5 million teens have used Invisalign clear aligners to transform their smiles.           
   buttons : 
 
-- question: Can anyone tell that I’m wearing aligners? 
+- question: Can anyone tell that I'm wearing aligners? 
   answer : |
-    Invisalign® aligners are virtually invisible. Others may not even notice you’re wearing them, making Invisalign treatment a seamless fit with your lifestyle. 
+    Invisalign® aligners are virtually invisible. Others may not even notice you're wearing them, making Invisalign treatment a seamless fit with your lifestyle. 
   buttons : 
  
 - question: Can I take my aligners off whenever I need to? 
@@ -216,5 +232,54 @@
       We often recommend anyone who has completed orthodontic treatment use a retainer to prevent teeth from gradually shifting back toward their initial position. But every case is different, our dentist will be able to suggest you based on your specific case. 
   buttons : 
 
+- question: What issues can Invisalign fix?  
+  answer : |
+    Invisalign can treat simple straightening to bigger issues, from crowded teeth to crossbite, underbite, open bite, and overbite. Invisalign can correct and give you the confident smile you always wanted.   
+  buttons : 
 
+- question: How is Invisalign different from braces? 
+  answer : |
+    Invisalign aligners are virtually invisible — people may not even notice you're wearing them. You can remove them to eat and drink, to brush and floss, or for special occasions. There are no metal brackets or wires that could irritate your mouth or break. Unlike other brands, Invisalign clear aligners are made from patented SmartTrack material, which makes them comfortable and provides a better fit. Invisalign aligners are also trimmed based on your gum line for comfort and appearance.   
+  buttons : 
 
+- question: What issues can Invisalign fix?  
+  answer : |
+    Invisalign can treat simple straightening to bigger issues, from crowded teeth to crossbite, underbite, open bite, and overbite. Invisalign can correct and give you the confident smile you always wanted.   
+  buttons :   
+
+- question: I am currently wearing braces. Can I make the switch to Invisalign treatment? 
+  answer : |
+    Possibly! We are routinely treating patients with a combination of braces and Invisalign clear aligners. You can schedule a free consultation with us to determine the best treatment approach for your smile. 
+  buttons :   
+
+- question:  my teeth have shifted. Can Invisalign treatment fix this?
+  answer : |
+    Yes, Invisalign clear aligners can treat nearly all common teeth-straightening issues, from simple to complex. Many people who formerly had braces choose Invisalign treatment as the discrete solution to improve their smile when they find that their teeth have shifted back. 
+  buttons :     
+
+- question: I have veneers or crowns. Will Invisalign clear aligners work with them? 
+  answer: |
+    It depends. You can schedule a free consultation to talk with our dentist about the dental work you've had done, including veneers and crowns, and we will evaluate if invisalign can meet your need. 
+  buttons:
+
+- question: I have bridgework on several teeth. Will Invisalign clear aligners still work? 
+  answer: |
+    Invisalign clear aligners are designed to move each tooth individually. Because bridgework connects two or more teeth, clear aligners may not be effective, but always check with the dentist about your specific case. 
+  buttons:
+
+- question: How is Invisalign treatment different than other teeth straightening options? 
+  answer: |
+    Invisalign treatment is the most advanced clear aligner system in the world. Unlike braces, Invisalign clear aligners are removable and virtually invisible. There are no wires and brackets, so you don't need to change the way you brush and floss. And, you can continue to eat all your favorite foods.  
+
+    Also, Invisalign aligners and retainers are trimmed based on each patient's gum line to provide optimal patient comfort and aesthetics. 
+  buttons:
+
+- question: Are there any restrictions on what I can eat while in treatment? 
+  answer: |
+    None! Invisalign clear aligners are removable, so there are no food restrictions at all. With traditional wires and brackets, there's a long list of foods you unfortunately can't enjoy because they can damage or get stuck in your braces. 
+  buttons:
+
+- question: Is Invisalign treatment more expensive than braces? 
+  answer: |
+    Invisalign treatment typically is comparable in cost as braces
+  buttons:
