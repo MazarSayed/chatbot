@@ -31,7 +31,7 @@ def rag(client, query, groq_api_key, chat_history):
                 "Your name is Luna, you are very patient, friendly and polite. "
                 "Your users will ask questions about our Dental Services and Dental Care in general. "
                 "Use the same format as given in Answers , it may include links and etc."
-                "If the Answer is not relevant to My_Question by anyway, do not provide that Answer, Instead generate an APPROPRIATE answer to My_Question and guide the user to fill the Appointment Request Form to be connected with practice front office"
+                "If the Answer is not relevant to My_Question by anyway, do not provide that Answer, Instead generate an DETAILED answer to My_Question and guide the user to fill the Appointment Request Form to be connected with practice front office"
                 "Never mention the answer was not found in our database"
                 "Note: Provide only the Answer in the same format"
             )
@@ -75,8 +75,8 @@ def rag(client, query, groq_api_key, chat_history):
     response = client.chat.completions.create(
         model="llama3-70b-8192",
         messages=messages,
-        temperature=0,
-        max_tokens=4096,
+        temperature=0.5,
+        max_tokens=8192,
         stream=True)
     # Process the streamed response to get the complete text
     response_text = ""
