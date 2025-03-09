@@ -5,6 +5,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.bin
+*.ipynb
+*.docx
+*.pdf
+*.txt
+*.md
+
 # C extensions
 *.so
 
