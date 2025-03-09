@@ -4,7 +4,7 @@ from src.utils.config import load_config
 import streamlit as st
 from langchain_groq import ChatGroq
 from src.database.chroma_manager import ChromaManager
-from src.utils.config import populate_chroma_db
+from src.utils.config import populate_chroma_db,populate_chroma_db_doc
 from groq import Groq
 import sqlite3
 from streamlit import logger
@@ -14,7 +14,7 @@ import threading
 import time
 from src.utils.config import EmbeddingModel
 from streamlit_autorefresh import st_autorefresh
-from src.nodes.functions import general_question
+from src.nodes.functions import business_info
 
 #__import__('pysqlite3')
 #import sys
@@ -30,7 +30,8 @@ load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 client = Groq(api_key=groq_api_key)
 chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
-populate_chroma_db(chroma_manager)
+#populate_chroma_db(chroma_manager)
+populate_chroma_db_doc(chroma_manager)
 
 def clear_submit():
       st.session_state["submit"] = False
@@ -50,7 +51,7 @@ st.title("Luna: helpful virtual dental concierge")
 #groq_api_key = st.text_input("Groq API Key", type="password")
 response_text = ""
 model = EmbeddingModel.get_instance()
-
+current_service = 'None' 
 if not groq_api_key:
     st.info("Please add your Groq API key to continue.", icon="🗝️")
 else:
@@ -59,10 +60,14 @@ else:
     if "messages" not in st.session_state or clear_history:
         # Get initial greeting
         #response_text, final_buttons = rag(client, "Hi", groq_api_key, [])
-        answers, questions, buttons = general_question("Hi")
-        print(answers[0])
-        # Set default greeting if no answer is found
-        st.session_state["messages"] = [{"role": "assistant", "content": answers [0]}]
+               # Set default greeting if no answer is found
+        answers, dental_service =  rag(client, "Hi", groq_api_key, current_service,[])
+        for chunk in answers:
+            token = chunk.choices[0].delta.content
+            if token:
+                response_text += token
+
+        st.session_state["messages"] = [{"role": "assistant", "content": response_text}]
         st.session_state["chat_history"] = []
         #st.session_state["buttons"] = [final_buttons]
         
@@ -86,6 +91,8 @@ else:
     for msg in st.session_state["messages"]:
         content = msg["content"]
         st.chat_message(msg["role"]).write(content)
+        print(f"\n{'='*50}\nAnswer: {content}\n{'='*50}")
+
         #st.write(btn)   # Print the final answer in the frontend after it is generated
 
     # Handle user input
@@ -96,11 +103,49 @@ else:
 
         with st.chat_message("assistant"):
             query_embedding = model.get_embedding(query)
-            response_text, final_buttons = rag(client, query, groq_api_key, st.session_state["messages"])
-            full_response = ""
-            for token in st.write_stream(stream_response(response_text, 0.0075)):
-                full_response += token
-    #    st.session_state["last_activity"] = time.time()
-        st.session_state["messages"].append({"role": "assistant", "content": full_response})
-        #st.session_state["buttons"].append(final_buttons)
+            response_text, dental_service = rag(client, query, groq_api_key,current_service, st.session_state["messages"])
+            if isinstance(response_text, dict):
 
+                full_response = response_text
+                props = full_response['data']['props']
+
+                    # Create a form in Streamlit
+                with st.form(key='appointment_form'):
+                    st.header(props['title'])
+                    st.write(props['description'])
+
+                    # Create input fields based on the fields defined in the widget
+                    for field in props['fields']:
+                        if field['type'] == 'text':
+                            name = st.text_input(field['label'], placeholder=field['placeholder'])
+                        elif field['type'] == 'email':
+                            email = st.text_input(field['label'], placeholder=field['placeholder'])
+                        elif field['type'] == 'tel':
+                            phone = st.text_input(field['label'], placeholder=field['placeholder'])
+                        elif field['type'] == 'date':
+                            preferred_date = st.date_input(field['label'])
+                        elif field['type'] == 'time':
+                            preferred_time = st.time_input(field['label'])
+                        elif field['type'] == 'textarea':
+                            notes = st.text_area(field['label'], placeholder=field['placeholder'])
+
+                    # Create a submit button
+                    submit_button = st.form_submit_button(label=props['button']['text'])
+                    
+                if submit_button:
+                        # Here you can handle the form submission, e.g., save the data or send it somewhere
+                        st.success("Your appointment has been booked!")
+
+
+            else:
+                full_response = ""
+                for token in st.write_stream(stream_response(response_text, 0.0075)):
+                    full_response += token
+                if current_service == '':
+                    current_service = dental_service    
+                print("current_service:",current_service)   
+    #    st.session_state["last_activity"] = time.time()
+                st.session_state["messages"].append({"role": "assistant", "content": full_response})
+
+
+       

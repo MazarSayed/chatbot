@@ -70,9 +70,66 @@
     There's metered street parking directly in front of our building on Beacon Street or along Englewood Avenue. Look for available spots; they're usually easy to find. Remember to check the meters for time limits and have change or use a parking app if needed.    
   buttons : 
 
+- question : No , I don't need to shedule a consultation or appointment.
+  answer : |
+      No problem. Feel free to let us know whenever you are ready to schedule the consultation with us.
+  buttons : 
+
+- question : User declined the consultation offer
+  answer : |
+      No problem. Feel free to let us know whenever you are ready to schedule the consultation with us.
+  buttons : 
 
 
-- question : Invisalign 
+- question : What is the first available appointment?  
+  answer : |  
+    To find out the first available appointment, please fill out the Appointment Request form. Our Office Manager will contact you at your convenience to set up the appointment. Let's get you scheduled! 
+  buttons : 
+
+- question: Yes, book a free consultation.
+  answer : |
+    Fill the following form for consultation:
+
+      Name: 
+
+      Phone: 
+
+      Email: 
+
+      Preferred Time: Morning / Afternoon 
+
+      Preferred Date: Mon, Tue, Wed, Thu, Fri 
+
+      Special Note:  
+
+ 
+  buttons : 
+
+- question: Yes, schedule an appointment.
+  answer : |
+    Fill the following form for consultation:
+    
+      Name: 
+
+      Phone: 
+
+      Email: 
+
+      Preferred Time: Morning / Afternoon 
+
+      Preferred Date: Mon, Tue, Wed, Thu, Fri 
+
+      Special Note:          
+  buttons : 
+
+
+
+
+
+
+
+
+- question : Information about Invisalign services 
   answer : |
       With over 5,000 smiles transformed, our Invisalign® Certified Providers are here to help you achieve the smile you've always wanted. Whether it's simple straightening or addressing complex issues like crowded teeth, crossbite, underbite, open bite, or overbite, Invisalign offers a solution.
 
@@ -112,17 +169,6 @@
   buttons :   
        "Yes" : "Yes, schedule a consultation."
        "No"  : "No, I don't need to shedule a consultation."    
-
-- question : No , I don't need to shedule a consultation or appointment.
-  answer : |
-      No problem. Feel free to let us know whenever you are ready to schedule the consultation with us.
-  buttons : 
-  
-
-- question : User declined the consultation offer
-  answer : |
-      No problem. Feel free to let us know whenever you are ready to schedule the consultation with us.
-  buttons : 
 
 - question : Will my insurance cover Invisalign treatment? 
   answer : | 
@@ -176,46 +222,6 @@
     Depending on the complexity of your case, you could start seeing results in your treatment in as little as 6 months. 
   buttons : 
 
-- question : What is the first available appointment?  
-  answer : |  
-    To find out the first available appointment, please fill out the Appointment Request form. Our Office Manager will contact you at your convenience to set up the appointment. Let's get you scheduled! 
-  buttons : 
-
-- question: Yes, book a free consultation.
-  answer : |
-    Fill the following form for consultation:
-
-      Name: 
-
-      Phone: 
-
-      Email: 
-
-      Preferred Time: Morning / Afternoon 
-
-      Preferred Date: Mon, Tue, Wed, Thu, Fri 
-
-      Special Note:  
-
- 
-  buttons : 
-
-- question: Yes, schedule an appointment.
-  answer : |
-    Fill the following form for consultation:
-    
-      Name: 
-
-      Phone: 
-
-      Email: 
-
-      Preferred Time: Morning / Afternoon 
-
-      Preferred Date: Mon, Tue, Wed, Thu, Fri 
-
-      Special Note:          
-  buttons : 
 
 - question: How many people have used Invisalign® clear aligners? 
   answer : |
@@ -279,7 +285,7 @@
     Also, Invisalign aligners and retainers are trimmed based on each patient's gum line to provide optimal patient comfort and aesthetics. 
   buttons:
 
-- question: Are there any restrictions on what I can eat while in treatment? 
+- question: Are there any restrictions on what I can eat while in Invisalign treatment? 
   answer: |
     None! Invisalign clear aligners are removable, so there are no food restrictions at all. With traditional wires and brackets, there's a long list of foods you unfortunately can't enjoy because they can damage or get stuck in your braces. 
   buttons:

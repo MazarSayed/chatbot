@@ -7,3 +7,6 @@ langchain_community
 groq
 chromadb
 streamlit_autorefresh
+python-docx
+fitz
+frontend

@@ -85,7 +85,7 @@ class ChromaManager:
             
             print("Processed buttons:", buttons)
 
-        return answers, questions, buttons
+        return answers
 
     def general_get_qa(self, query_embedding, services, n_results=1):
         collection = self.get_or_create_collection("Question__Answer")
@@ -137,23 +137,31 @@ class ChromaManager:
             
             print("Processed buttons:", buttons)
 
-        return answers, questions, buttons
+        return answers
     
-    def get_doc(self, collection_name, query_embedding, n_results=2):
-        """Retrieve documents from the specified collection based on a query embedding."""
-        collection = self.get_or_create_collection(collection_name)
+    def get_doc(self, embedding, dental_service,n_results=1):
+        """Retrieve documents from the specified collection based on a query."""
+        collection = self.get_or_create_collection("Documents")
+        print("\n\nCollection:", collection)
         with self.db_lock:
             results = collection.query(
-                query_embeddings=[query_embedding.tolist()],
+                query_embeddings=[embedding.tolist()],
                 n_results=n_results,
             )
         
         # Extract documents from results
-        documents = results.get('documents', [[]])
-        return [json.loads(doc) for doc in documents if doc]  # Return non-empty documents
+        Documents = results.get('documents', [[]])
+        if Documents and isinstance(Documents, list) and isinstance(Documents[0], list):
+            extracted_string = Documents[0]  # Access the first element of the first list
+            print("Extracted String:", extracted_string)
+        else:
+            print("No valid documents found.")
+        # If documents are strings, parse them
+        return extracted_string # Return non-empty documents
 
     def get_all_documents(self, collection_name):
         collection = self.get_or_create_collection(collection_name)
+        print("\n\nCollection:", collection)
         with self.db_lock:
             results = collection.query(
                 query_texts=["*"],
@@ -194,25 +202,25 @@ class ChromaManager:
                 except Exception as e:
                     print(f"Error adding batch: {e}")
 
-        def batch_add_documents(self, embeddings, documents):
-            """Add multiple documents to the database in batches."""
-            collection = self.get_or_create_collection("Documents")
+    def batch_add_documents(self, embeddings, documents):
+        """Add multiple documents to the database in batches."""
+        collection = self.get_or_create_collection("Documents")
+        
+        # Process in batches
+        batch_size = 50
+        for i in range(0, len(documents), batch_size):
+            end_idx = min(i + batch_size, len(documents))
+            batch_embeddings = [emb.tolist() for emb in embeddings[i:end_idx]]
+            batch_documents = documents[i:end_idx]
             
-            # Process in batches
-            batch_size = 5
-            for i in range(0, len(documents), batch_size):
-                end_idx = min(i + batch_size, len(documents))
-                batch_embeddings = [emb.tolist() for emb in embeddings[i:end_idx]]
-                batch_documents = documents[i:end_idx]
-                
-                with self.db_lock:
-                    try:
-                        collection.add(
-                            embeddings=batch_embeddings,
-                            documents=batch_documents,
-                            metadatas=[{} for _ in batch_documents],  # Assuming no metadata for documents
-                            ids=[str(collection.count() + j + 1) for j in range(len(batch_documents))]
-                        )
-                        print(f"Added batch of {len(batch_documents)} documents")
-                    except Exception as e:
-                        print(f"Error adding batch: {e}")            
+
+            with self.db_lock:
+                try:
+                    collection.add(
+                        embeddings=batch_embeddings,
+                        documents=batch_documents,
+                        ids=[str(collection.count() + j + 1) for j in range(len(batch_documents))]
+                    )
+                    print(f"Added batch of {len(batch_documents)} documents")
+                except Exception as e:
+                    print(f"Error adding batch: {e}")       

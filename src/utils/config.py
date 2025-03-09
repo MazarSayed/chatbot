@@ -5,6 +5,7 @@ import os
 import logging
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
+from src.utils.docx_to_txt import convert_docs_to_markdown, read_folder_to_text_df
 
 class EmbeddingModel:
     _instance = None
@@ -88,18 +89,33 @@ def load_doc():
     return dental_implants_doc[0]['Doc']
 
 def populate_chroma_db_doc(chroma_manager):
-    logging.info("Populating Chroma DB with doc's...")
-    dental_implants_content = load_doc()
-    dental_implants_paragraphs = dental_implants_content.strip().split('\n\n')  # Split by double newlines for paragraphs
+    print("Populating Chroma DB with doc's...")
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    print("dir_path",os.path.join(dir_path,"..","..","data/pdf/"))
+    paragraphs = read_folder_to_text_df(os.path.join(dir_path,"..","..","data/pdf/"))
+    #content = convert_docs_to_markdown(os.path.join(dir_path,"..","..","data/"))
+    # Clean the extracted string
+    #cleaned_text = [text for text in extracted_string if text.strip() and text != '\xa0']
+    
+    # Join the cleaned text into a single string
+    #cleaned_text_string = '\n\n'.join(content)  # Join with double newlines if needed
+
+    # Now you can safely call strip() and split()
+    #words = content.strip().split()  # Split content into words
+    #paragraphs = [' '.join(words[i:i + 100]) for i in range(0, len(words), 100)]  # Chunk into 100-word segments
+    print(f"Number of paragraphs in the document: {len(paragraphs)}")
+    
     model = EmbeddingModel.get_instance()
-    embeddings = model.get_embedding(dental_implants_paragraphs)
-    chroma_manager.batch_add_documents(embeddings, dental_implants_paragraphs)
-    logging.info("Chroma DB doc populated")
+    embeddings = model.get_embedding(paragraphs)
+    chroma_manager.batch_add_documents(embeddings, paragraphs)
+    print("Chroma DB doc populated")
 
 
 # Function to populate Chroma DB with examples
 def populate_chroma_db(chroma_manager):
     logging.info("Populating Chroma DB with qa's...")
+    print("Populating Chroma DB with qa's...")
+
     question_answer = load_question_answer()
     
     # Use singleton model instance
@@ -116,4 +132,4 @@ def populate_chroma_db(chroma_manager):
     # Add all QAs in a single batch, including buttons
     chroma_manager.batch_add_question_answers(embeddings, questions, answers, buttons_list)
     
-    logging.info("Chroma DB qa populated")
+    print("Chroma DB qa populated")
