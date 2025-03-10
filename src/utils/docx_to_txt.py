@@ -57,7 +57,7 @@ def read_folder_to_text_df(directory_path):
     for filename in os.listdir(directory_path):
         if filename.endswith(".pdf"):
             filepath = os.path.join(directory_path, filename)
-            print(f"Processing file: {filepath}")
+            print(f"Processing file: {filename}")  # Print only the file name
             pdf_document = fitz.open(filepath)  # Corrected to use fitz.open
 
             for page_num in range(len(pdf_document)):
@@ -72,13 +72,12 @@ def read_folder_to_text_df(directory_path):
                 texts.extend(split_texts)  # Use extend to add chunks directly to the list
 
             pdf_document.close()
-
     # Write the collected chunks to output.txt, deleting it if it exists
     output_file_path = os.path.join('data', 'output.txt')
     if os.path.exists(output_file_path):
         os.remove(output_file_path)  # Delete the existing file
 
-    with open(output_file_path, 'w') as output_file:  # Create a new file
+    with open(output_file_path, 'w', encoding='utf-8') as output_file:  # Create a new file with UTF-8 encoding
         for text in texts:
             output_file.write(text + '\n')  # Write each chunk to the file               
 

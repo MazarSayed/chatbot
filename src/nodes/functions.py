@@ -14,9 +14,9 @@ def business_info(dental_service: str,question_describtion:str)->str:
 
     if dental_service in config["services"]:
         current_service = dental_service
-        answers = chroma_manager.get_doc(query_embedding,dental_service,2)
+        answers = chroma_manager.get_doc(query_embedding,dental_service,3)
     elif dental_service == 'none':
-        answers = chroma_manager.get_doc(query_embedding,dental_service,2)
+        answers = chroma_manager.get_doc(query_embedding,dental_service,3)
         current_service = ''
     else:
         current_service = ''

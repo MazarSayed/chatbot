@@ -1,7 +1,7 @@
 
 prompt_folder_path: ./prompts/
 owner: CelestialBI Dentals
-services: ['invisalign','teeth cleaning','dental checkup','emergency dental care','dental implants']
+services: ['invisalign','teeth cleaning','dental checkup','emergency dental care','dental implants','laser treatment','sealants','flouride treatment']
 chroma_path: ./chroma_db
 time_out : 10
 
