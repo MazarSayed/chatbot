@@ -15,7 +15,7 @@ import time
 from src.utils.config import EmbeddingModel
 from streamlit_autorefresh import st_autorefresh
 from src.nodes.functions import business_info
-from src.storage.container.logs import LogsContainer
+from src.storage.containers.logs import LogsContainer
 from src.handlers.logging_handler import LLMLoggingHandler
 from src.storage.database_manager import SQLiteManager
 import uuid
