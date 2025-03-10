@@ -5,6 +5,7 @@ import os
 import logging
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
+from src.utils.docx_to_txt import read_folder_to_text_df
 
 class EmbeddingModel:
     _instance = None
@@ -79,6 +80,28 @@ def load_question_answer():
     logging.debug("Loading qa's")
     question_answer = load_yaml(question_answer_path)
     return question_answer
+
+def populate_chroma_db_doc(chroma_manager):
+    print("Populating Chroma DB with doc's...")
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    print("dir_path",os.path.join(dir_path,"..","..","data/pdf/"))
+    paragraphs = read_folder_to_text_df(os.path.join(dir_path,"..","..","data/pdf/"))
+    #content = convert_docs_to_markdown(os.path.join(dir_path,"..","..","data/"))
+    # Clean the extracted string
+    #cleaned_text = [text for text in extracted_string if text.strip() and text != '\xa0']
+    
+    # Join the cleaned text into a single string
+    #cleaned_text_string = '\n\n'.join(content)  # Join with double newlines if needed
+
+    # Now you can safely call strip() and split()
+    #words = content.strip().split()  # Split content into words
+    #paragraphs = [' '.join(words[i:i + 100]) for i in range(0, len(words), 100)]  # Chunk into 100-word segments
+    print(f"Number of paragraphs in the document: {len(paragraphs)}")
+    
+    model = EmbeddingModel.get_instance()
+    embeddings = model.get_embedding(paragraphs)
+    chroma_manager.batch_add_documents(embeddings, paragraphs)
+    print("Chroma DB doc populated")
 
 # Function to populate Chroma DB with examples
 def populate_chroma_db(chroma_manager):
