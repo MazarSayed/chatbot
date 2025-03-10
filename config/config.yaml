@@ -1,9 +1,14 @@
 
 prompt_folder_path: ./prompts/
 owner: CelestialBI Dentals
-services: ['Invisalign','Teeth Cleaning','Dental Checkup','Emergency Dental Care','Dental Implant']
+services: ['invisalign','teeth cleaning','dental checkup','emergency dental care','dental implants','laser treatment','sealants','flouride treatment']
 chroma_path: ./chroma_db
 time_out : 10
 
-inactivity_timeout : 60,  # Threshold for user inactivity (seconds)
+inactivity_timeout : 60,  # Threshold for user inactivity (seconds) 
 refresh_interval : 5 
+welcome_message : "Hello! Welcome to Brookline Progressive Dental Team. I'm Luna, your dedicated smile concierge, 
+                  here to help you find the perfect dental care just for you.
+                  We are a multi-specialty practice, serving the Greater Boston area for over 20 years and bringing confident smiles to thousands of families. 
+                  Our team consists of American Board-Certified experts dedicated to providing top-tier dental care for both adults and children.
+                  To better assist you today, would you please first tell me what brings you here today? "
