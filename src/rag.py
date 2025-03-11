@@ -1,36 +1,39 @@
 from groq import Groq
 import time
 from test import chat_with_llama
+import json
+from src.utils.config import load_config
 
-def rag(client,query,groq_api_key,chat_history):
-    
+def rag(client, query, groq_api_key, current_service, chat_history):
+    config,prompt = load_config()
+
     if len(chat_history) > 7:
-        recent_history = chat_history[-7:-1]
+        recent_history = chat_history[-7:]
     else:
         recent_history = chat_history[:]
 
     print(f"\n{'='*50}\n all_history: {recent_history}\n{'='*50}")
 
-    answers,questions = chat_with_llama(client,query,recent_history)
-    # Ensure exactly 3 items in each list
-    answers = [ans[0] if isinstance(ans, list) else ans for ans in answers]
-    answers = (answers + [''] * 3)[:3]
-    questions = (questions + [''] * 3)[:3]
-
-    Answer = "\n\n".join(answers)
-
+    answers = chat_with_llama(client, query,current_service, recent_history)
+    if isinstance(answers, dict):
+        return answers  # Return appointment form if answer is a dict
+    
+    # Flatten the list of answers if it's a list of lists
+    Context = answers[0]
+    print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
+    print(f"\n{'='*50}\n Context: {Context}\n{'='*50}")
+    
     messages = [
         {
             "role": "system",
             "content": (
-                "You are a helpful virtual dental concierge for a Dental Care Website owned by Loop Intelligence. "
+                "You are a helpful virtual dental concierge for a Dental Care Website owned by Brookline Dental Team. "
                 "Your name is Luna, you are very patient, friendly and polite. "
                 "Your users will ask questions about our Dental Services and Dental Care in general. "
-                "You will be given three quesyion and answers pairs, find most matching question and use it's answer as the most appropriate an answer"
-                "Use the same format as given , it may include links and etc."
-                "If the Answer is not relevant to My_Question, do not provide that answer, Instead generate an APPROPRIATE answer to My_Question and guide the user to fill the Appointment Request Form to be connected with practice front office"
-                "Never mention the answer was not found in our database"
-                "Note: Provide only the Answer"
+                "Use the given Context to generate a response to the question in detail"
+                "Provide a short answers in a structred format with appropriate line breaks and bolds only when needed."
+                "Makse sure curate your response to showcase the brand of Brookline Dental Team"
+                "Here is your welcome message = {}".format(config['welcome_message'])
             )
         }
     ]
@@ -40,36 +43,70 @@ def rag(client,query,groq_api_key,chat_history):
     user_message = {
         "role": "user",
         "content": f""" 
-                    Chat_History = {recent_history}    
-                    Question 1: {questions[0]} Answer 1: {answers[0]}. \n
-                    Question 2: {questions[1]} Answer 2: {answers[1]}. \n
-                    Question 3: {questions[2]} Answer 3: {answers[2]}. \n
                     My_Question: {query}\n
+                    Context: {Context}. \n
 
                     Follow the steps given below:
-                        1. Find the Question which is most similar to the My_Question, and use it's answer as the most appropriate answer based on the Chat_History .\n
-                           Provide only the Answer in the same mardkdown format as given, do not make any changes to the answer.\n\n
+                        1. Analyze My_Question and Context given above.
+                        2. Provide a brief response to answer My_Question using the Context mainly.
+                        3. Output your short response in the structured format with appropriate line breaks and bolds only when needed.
 
-                        2. Analzye My_Question, selected Answer from step 1 and Chat_History.\n\n
-                        3. If the selected Answer is not relevant to My_Question, DO NOT provide that answer.\n\n
-                        4. Instead generate an  APPROPRIATE answer to My_Question and guide the user to fill the Appointment Request Form to be connected with practice front office.\n\n
-                    Do not use any preamble or postambles, just provide the answer.\n
-                    Make sure to follow the steps given above.\n
-                    Output:
-                        """
+                    Note: Provide very detailed long answers for questions only on treatment plan and after care for the dental services
+                    Provide only the output by following above steps with no additional text.
+                    """
     }
     messages.append(user_message)
-    
-    print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
-    print(f"\n{'='*50}\n Answer : {Answer}\n{'='*50}")
 
     response = client.chat.completions.create(
         model="llama3-70b-8192",
         messages=messages,
-        temperature = 0,
-        max_tokens = 4096,
-        stream = True)
-    return response
+        temperature=0.5,
+        max_tokens=8192,
+        stream=True)
+    # Process the streamed response to get the complete text
+    # response_text = ""
+    # for chunk in response:
+    #     if chunk.choices[0].delta.content:
+    #         response_text += chunk.choices[0].delta.content
+    #         if "<output>" in response_text and "</output>" in response_text:
+    #             start = response_text.find("<output>") + len("<output>")
+    #             end = response_text.find("</output>")
+    #             response_text = response_text[start:end].strip()
+    #             print("struct_response:",response_text)
+
+    # try:
+    #     # Parse the JSON response
+    #     json_response = json.loads(response_text)
+    #     # Extract status and final_answer, with fallbacks
+    #     status = json_response.get("status", "")
+    #     final_answer = json_response.get("final_response", "")
+        
+    #     # If we got a valid response, use it
+    #     if status and final_answer:
+    #         is_relevant = (status == "Relevant")
+    #     else:
+    #         # If missing required fields, treat as invalid JSON
+    #         raise json.JSONDecodeError("Missing required fields", response_text, 0)
+            
+    # except json.JSONDecodeError as e:
+    #     print(f"JSON decoding error: {e}")
+
+    #     # If JSON parsing fails or invalid format, use original answer
+    #     final_answer = json_response.split('final_response":')[1].strip().rstrip('}')
+    #     is_relevant = True  # Default to showing buttons
+
+    # except Exception as e:
+    #     print(f"An error occurred: {e}")
+    #     final_answer = "An unexpected error occurred."
+    #     is_relevant = False  
+
+    #print(f"\n{'='*50}\nAnswer: {response}\n{'='*50}")
+
+    # Return the final answer and buttons based on relevance
+    #final_buttons = buttons 
+    #print("Final Buttons:",final_buttons)
+    print(f"\n{'='*50}\nAnswer: {response}\n{'='*50}")
+    return response,answers[1]
 
 
 def stream_response(response_text, delay):
@@ -80,10 +117,12 @@ def stream_response(response_text, delay):
     """
     content_response = ""    
     for chunk in response_text:
-        token = chunk.choices[0].delta.content
-        time.sleep(delay)
-        if token:
-            content_response += token
-            yield token
+            token = chunk.choices[0].delta.content
+            time.sleep(delay)
+            if token:
+                content_response += token
+                yield token
+    print(f"\n{'='*50}\nAnswer: {content_response}\n{'='*50}")
+       
     
     
