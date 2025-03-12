@@ -10,3 +10,4 @@ streamlit_autorefresh
 python-docx
 fitz
 frontend
+pymupdf4llm

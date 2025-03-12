@@ -20,7 +20,7 @@ def rag(client, query, groq_api_key, current_service, chat_history):
     
     # Flatten the list of answers if it's a list of lists
     Context = answers[0]
-    print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
+    print(f"\n{'='*50}\nUser message: {answers[2]}\n{'='*50}")
     print(f"\n{'='*50}\n Context: {Context}\n{'='*50}")
     
     messages = [
@@ -43,16 +43,18 @@ def rag(client, query, groq_api_key, current_service, chat_history):
     user_message = {
         "role": "user",
         "content": f""" 
-                    My_Question: {query}\n
+                    My_Question: {answers[2]}\n
                     Context: {Context}. \n
 
                     Follow the steps given below:
                         1. Analyze My_Question and Context given above.
-                        2. Provide a brief response to answer My_Question using the Context mainly.
-                        3. Output your short response in the structured format with appropriate line breaks and bolds only when needed.
+                        2. Provide a response only to answer My_Question using the Context mainly.
+                        3. Do not provide any additional information than requrired for the My_Question.
+                        4. Output your short response in the structured format with appropriate line breaks and bolds only when needed.
 
                     Note: Provide very detailed long answers for questions only on treatment plan and after care for the dental services
                     Provide only the output by following above steps with no additional text.
+                    Do not provide topics in the response, but structure your response.
                     """
     }
     messages.append(user_message)

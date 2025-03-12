@@ -4,29 +4,36 @@ from typing_extensions import Annotated
 import os
 from src.utils.config import EmbeddingModel
 
-def business_info(dental_service: str,question_describtion:str)->str:
+def business_info(dental_service: str,question_describtion:str,previous_dental_service:str)->str:
     config,prompt = load_config()
     chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
     model = EmbeddingModel.get_instance()
-    query_embedding = model.get_embedding(question_describtion)
+    previous_dental_service = previous_dental_service.lower()
+    service_question = question_describtion+"-"+previous_dental_service
+    print(f"\n{'='*50}\n service_question: {service_question}\n{'='*50}")
+    query_embedding = model.get_embedding(service_question)
     dental_service = dental_service.lower()
+    
     #current_service = None
 
-    if dental_service in config["services"]:
-        current_service = dental_service
-        answers = chroma_manager.get_doc(query_embedding,dental_service,3)
+    if dental_service !='none':
+        if dental_service in config['services']:
+            current_service = dental_service
+        else:
+            current_service = ''
+        answers = chroma_manager.get_doc(query_embedding,dental_service,2)
     elif dental_service == 'none':
-        answers = chroma_manager.get_doc(query_embedding,dental_service,3)
+        answers = chroma_manager.get_doc(query_embedding,dental_service,2)
         current_service = ''
-    else:
-        current_service = ''
-        answers = [[f"""Thank you for considering us for your dental needs! Unfortunately, 
-            we do not currently offer {dental_service}. However, our dentists have an excellent network of specialists in this specialty. 
-            We recommend coming in for a personalized assessment so our dentist can refer you to the right expert for your needs. 
-            Would you like to schedule a consultation?"""]]
+    #else:
+    #    current_service = ''
+    #    answers = [[f"""Thank you for considering us for your dental needs! Unfortunately, 
+    #        we do not currently offer {dental_service}. However, our dentists have an excellent network of specialists in this specialty. 
+    #        We recommend coming in for a personalized assessment so our dentist can refer you to the right expert for your needs. 
+    #        Would you like to schedule a consultation?"""]]
     #    questions = [[f"Services not in the list of {dental_service}"]]
 #    buttons = [[{}]]  # Empty buttons for services not in the list
-    return [answers,current_service]
+    return [answers,current_service,service_question]
 
 def book_appointment()->str:
     print("Booking appointment...")

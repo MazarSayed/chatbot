@@ -2,7 +2,7 @@
 
 #config,prompt = load_config()
 
-def tools(services,query,history):
+def tools(services,query,history,current_service):
     recent_history = history[-3:-1]
     print(f"\n{'='*50}\n recent history: {recent_history}\n{'='*50}")
 
@@ -26,9 +26,12 @@ def tools(services,query,history):
                             "type": "string",
                             "description": "Provide a question_describtion based on user_input and chat_history"
                         },
-                        
+                        "previous_dental_service": {
+                            "type": "string",
+                            "description": "previous_dental_service =  {}".format(current_service)
+                        }    
                     },
-                    "required": ["dental_service","question_describtion"] 
+                    "required": ["dental_service","question_describtion","previous_dental_service"] 
                 }
             }
         },

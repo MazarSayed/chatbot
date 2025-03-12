@@ -61,11 +61,7 @@ else:
         # Get initial greeting
         #response_text, final_buttons = rag(client, "Hi", groq_api_key, [])
                # Set default greeting if no answer is found
-        answers, dental_service =  rag(client, "Hi", groq_api_key, current_service,[])
-        for chunk in answers:
-            token = chunk.choices[0].delta.content
-            if token:
-                response_text += token
+        response_text = """Hello! Welcome to Brookline Progressive Dental Team.\n I'm Luna, your dedicated smile concierge, here to help you find the perfect dental care just for you.\n We are a multi-specialty practice, serving the Greater Boston area for over 20 years and bringing confident smiles to thousands of families.\n Our team consists of American Board-Certified experts dedicated to providing top-tier dental care for both adults and children.\n Tobetter assist you today, would you please first tell me what brings you here today?"""
 
         st.session_state["messages"] = [{"role": "assistant", "content": response_text}]
         st.session_state["chat_history"] = []
@@ -141,7 +137,7 @@ else:
                 full_response = ""
                 for token in st.write_stream(stream_response(response_text, 0.0075)):
                     full_response += token
-                if current_service == '':
+                if dental_service in config['services']:
                     current_service = dental_service    
                 print("current_service:",current_service)   
     #    st.session_state["last_activity"] = time.time()

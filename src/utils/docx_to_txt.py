@@ -4,6 +4,7 @@ import sys
 import fitz  
 import pandas as pd
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+import pymupdf4llm
 
 
 def convert_docs_to_markdown(folder_path):
@@ -45,7 +46,7 @@ def convert_docs_to_markdown(folder_path):
 
             # Join the lines into a single Markdown string for the current document
             document_markdown_content = ''.join(markdown_lines)
-            combined_markdown_content += document_markdown_content + '\n\n'  # Separate documents with two newlines
+            combined_markdown_content += document_markdown_content + '\n\n\n'  # Separate documents with two newlines
             with open(os.path.join('data', 'output.txt'), 'a') as output_file:  # Open output.txt in append mode
                 output_file.write(document_markdown_content + '\n\n')  # Write the current document's content to the file
 
@@ -54,32 +55,26 @@ def convert_docs_to_markdown(folder_path):
 
 def read_folder_to_text_df(directory_path):
     texts = []  # Initialize texts list outside the loop
+    output_file_path = os.path.join(directory_path, '..', 'output.txt')
+    if os.path.exists(output_file_path):
+        os.remove(output_file_path)  # Delete the existing file
+
     for filename in os.listdir(directory_path):
         if filename.endswith(".pdf"):
             filepath = os.path.join(directory_path, filename)
             print(f"Processing file: {filename}")  # Print only the file name
-            pdf_document = fitz.open(filepath)  # Corrected to use fitz.open
+            markdown_text = pymupdf4llm.to_markdown(filepath)
 
-            for page_num in range(len(pdf_document)):
-                page = pdf_document.load_page(page_num)
-                page_text = page.get_text()
-                
-                # Split page text with overlap of 50 characters
-                text_splitter = RecursiveCharacterTextSplitter(chunk_overlap=100, chunk_size=600)
-                split_texts = text_splitter.split_text(page_text)
-                
-                # Collect each chunk into the texts list
-                texts.extend(split_texts)  # Use extend to add chunks directly to the list
+            # Collect each page's text into the texts list
+                       
+            split_texts = markdown_text.split('new paragraph')  # Split the text at each 'new paragraph'
+            texts.extend(split_texts)  # Add the split text directly to the list
 
-            pdf_document.close()
+    #print("full texts :", texts)        
     # Write the collected chunks to output.txt, deleting it if it exists
-    output_file_path = os.path.join('data', 'output.txt')
-    if os.path.exists(output_file_path):
-        os.remove(output_file_path)  # Delete the existing file
-
     with open(output_file_path, 'w', encoding='utf-8') as output_file:  # Create a new file with UTF-8 encoding
-        for text in texts:
-            output_file.write(text + '\n')  # Write each chunk to the file               
+        for index, text in enumerate(texts, start=1):  # Add a number for the chunks
+            output_file.write(f"Chunk {index}:\n{text}\n\n---------------------\n\n")  # Write each chunk to the file with two line breaks and a separator
 
     if not texts:
         print(f"No documents found in: {directory_path}")

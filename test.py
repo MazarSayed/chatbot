@@ -16,7 +16,8 @@ PROMPT = """You are a helpful virtual dental concierge for a Dental Care Website
         - Your name is Luna, you are very patient, friendly and polite Dental Information provider.
         - if you call the 'business_info' tool you will get information regarding the Brookline Progressive Dental Team and types of Dental Services like: {services}, insurance, parking or location etc.
         - if you call the 'book_appointment' tool an appointment form will be sent to the user to book an appointment with the Brookline Progressive Dental Team.
-        - Make sure to analzye the chat_history and the input user_query before generating query_description """.format(services=config["services"])
+        - Make sure to analzye the chat_history and the input user_query before generating question_description 
+        - Make sure you remember the last service user talked about, and use it to generate the right question_description """.format(services=config["services"])
 
 
 
@@ -28,10 +29,14 @@ def chat_with_llama(client,query,current_service,recent_history):
     # Add conversation history to provide context for the model
     messages.extend(recent_history)
 
+    print(f"\n{'='*50}\n current_service in action: {current_service}\n{'='*50}")
+
     # Add the current user query
     user_message = {
         "role": "user",
-        "content": f"Consider the chat_history:{recent_history} and mainly the user_query: {query}, use the right tool and generate the right parameters, current_service: {current_service}"
+        "content": f"""Consider the chat_history:{recent_history} and mainly the user_query: {query} \n
+                       Use the right tool and generate the right parameters based on the user_query,recent_history and current_service.\n
+                       Link all insurance coverage questions to the current_service : {current_service} and make sure to answer for the service provided"""
     }
     messages.append(user_message)
 
@@ -40,7 +45,7 @@ def chat_with_llama(client,query,current_service,recent_history):
     response = client.chat.completions.create(
         model="llama3-70b-8192",
         messages=messages,
-        tools=tools(config["services"], query, recent_history),
+        tools=tools(config["services"], query, recent_history,current_service),
         tool_choice="auto",
         temperature=0,
         max_tokens=4096,
@@ -78,9 +83,11 @@ def chat_with_llama(client,query,current_service,recent_history):
 
         # Return based on function name
         if function_name == 'business_info':
-            print("answers[0]",answers[0])
-            print("answers[1]",answers[1])
-            return answers[0], answers[1]  # Return both outputs for business_info
+            print("answers[0] :",answers[0])
+            print("answers[1] :",answers[1])
+            print("answers[2] :",answers[2])
+
+            return answers  # Return both outputs for business_info
         elif function_name == 'book_appointment':
             return answers  # Return the appointment form
 
