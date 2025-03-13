@@ -15,6 +15,7 @@ import time
 from src.utils.config import EmbeddingModel
 from streamlit_autorefresh import st_autorefresh
 from src.nodes.functions import business_info
+from datetime import datetime
 
 #__import__('pysqlite3')
 #import sys
@@ -99,48 +100,92 @@ else:
 
         with st.chat_message("assistant"):
             query_embedding = model.get_embedding(query)
-            response_text, dental_service = rag(client, query, groq_api_key,current_service, st.session_state["messages"])
+            response_text, dental_service = rag(client, query, groq_api_key, current_service, st.session_state["messages"])
+            
             if isinstance(response_text, dict):
-
+                # Handle appointment form
                 full_response = response_text
                 props = full_response['data']['props']
 
-                    # Create a form in Streamlit
+                # Create a form in Streamlit
                 with st.form(key='appointment_form'):
                     st.header(props['title'])
                     st.write(props['description'])
 
+                    form_data = {}  # Store form data
                     # Create input fields based on the fields defined in the widget
                     for field in props['fields']:
                         if field['type'] == 'text':
-                            name = st.text_input(field['label'], placeholder=field['placeholder'])
+                            form_data[field['label']] = st.text_input(
+                                field['label'], 
+                                placeholder=field.get('placeholder', ''),
+                                key=f"form_{field['label']}"
+                            )
                         elif field['type'] == 'email':
-                            email = st.text_input(field['label'], placeholder=field['placeholder'])
+                            form_data[field['label']] = st.text_input(
+                                field['label'], 
+                                placeholder=field.get('placeholder', ''),
+                                key=f"form_{field['label']}"
+                            )
                         elif field['type'] == 'tel':
-                            phone = st.text_input(field['label'], placeholder=field['placeholder'])
+                            form_data[field['label']] = st.text_input(
+                                field['label'], 
+                                placeholder=field.get('placeholder', ''),
+                                key=f"form_{field['label']}"
+                            )
                         elif field['type'] == 'date':
-                            preferred_date = st.date_input(field['label'])
+                            form_data[field['label']] = st.date_input(
+                                field['label'],
+                                key=f"form_{field['label']}"
+                            )
                         elif field['type'] == 'time':
-                            preferred_time = st.time_input(field['label'])
+                            form_data[field['label']] = st.time_input(
+                                field['label'],
+                                key=f"form_{field['label']}"
+                            )
                         elif field['type'] == 'textarea':
-                            notes = st.text_area(field['label'], placeholder=field['placeholder'])
+                            form_data[field['label']] = st.text_area(
+                                field['label'], 
+                                placeholder=field.get('placeholder', ''),
+                                key=f"form_{field['label']}"
+                            )
 
                     # Create a submit button
                     submit_button = st.form_submit_button(label=props['button']['text'])
                     
-                if submit_button:
-                        # Here you can handle the form submission, e.g., save the data or send it somewhere
-                        st.success("Your appointment has been booked!")
-
+                    if submit_button:
+                        # Log the form submission
+                        try:
+                            # Create a log entry for the form submission
+                            log_entry = {
+                                "type": "appointment_booking",
+                                "timestamp": datetime.now().isoformat(),
+                                "form_data": form_data
+                            }
+                            
+                            # Here you would typically save this to your database
+                            print("Form submission logged:", log_entry)
+                            st.success("""Thank you for your request! Our team will contact you shortly to set up your appointment. 
+                                       Is there anything else I can help you in the meantime?""")
+                        except Exception as e:
+                            st.error(f"Error booking appointment: {str(e)}")
 
             else:
+                # Handle streaming text response
                 full_response = ""
-                for token in st.write_stream(stream_response(response_text, 0.0075)):
-                    full_response += token
+                try:
+                    # Use st.write instead of st.write_stream for non-streaming responses
+                    for token in stream_response(response_text, 0.0075):
+                        full_response += token
+                        st.write(token)
+                        st.empty()  # Clear the previous write
+                        
+                except Exception as e:
+                    st.error(f"Error displaying response: {str(e)}")
+                    
                 if dental_service in config['services']:
                     current_service = dental_service    
-                print("current_service:",current_service)   
-    #    st.session_state["last_activity"] = time.time()
+                print("current_service:", current_service)   
                 st.session_state["messages"].append({"role": "assistant", "content": full_response})
 
 

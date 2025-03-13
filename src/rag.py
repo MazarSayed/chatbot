@@ -16,8 +16,10 @@ def rag(client, query, groq_api_key, current_service, chat_history):
 
     answers = chat_with_llama(client, query,current_service, recent_history)
     if isinstance(answers, dict):
-        return answers  # Return appointment form if answer is a dict
-    
+        dental_service = "none"
+        return answers, dental_service  # Return appointment form if answer is a dict
+    else :
+        dental_service = answers[1]
     # Flatten the list of answers if it's a list of lists
     Context = answers[0]
     print(f"\n{'='*50}\nUser message: {answers[2]}\n{'='*50}")
@@ -45,6 +47,7 @@ def rag(client, query, groq_api_key, current_service, chat_history):
         "content": f""" 
                     My_Question: {answers[2]}\n
                     Context: {Context}. \n
+                    Dental_Service: {dental_service}
 
                     Follow the steps given below:
                         1. Analyze My_Question and Context given above.
@@ -107,7 +110,7 @@ def rag(client, query, groq_api_key, current_service, chat_history):
     # Return the final answer and buttons based on relevance
     #final_buttons = buttons 
     #print("Final Buttons:",final_buttons)
-    return response,answers[1]
+    return response,dental_service
 
 
 def stream_response(response_text, delay):
@@ -117,12 +120,23 @@ def stream_response(response_text, delay):
     and yields the token for further processing.
     """
     content_response = ""    
-    for chunk in response_text:
-            token = chunk.choices[0].delta.content
-            time.sleep(delay)
-            if token:
-                content_response += token
-                yield token
+    # Check if response_text is a streaming response or a regular response
+    if hasattr(response_text, '__iter__') and not isinstance(response_text, (str, dict)):
+        for chunk in response_text:
+            try:
+                token = chunk.choices[0].delta.content
+                if token:
+                    content_response += token
+                    yield token
+                time.sleep(delay)
+            except AttributeError as e:
+                print(f"Error processing chunk: {e}")
+                continue
+    else:
+        # For non-streaming responses, return the entire text at once
+        content_response = str(response_text)
+        yield content_response
+
     print(f"\n{'='*50}\nAnswer: {content_response}\n{'='*50}")
        
     
