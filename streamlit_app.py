@@ -6,13 +6,12 @@ from langchain_groq import ChatGroq
 from src.database.chroma_manager import ChromaManager
 from src.utils.config import populate_chroma_db,populate_chroma_db_doc
 from groq import Groq
-import sqlite3
 from streamlit import logger
-from src.rag import rag,stream_response
+from src.rag import rag,process_stream
 import time
 import threading
 import time
-from src.utils.config import EmbeddingModel
+from src.utils.config import EmbeddingModel,count_tokens,calculate_ceiling_tokens
 from streamlit_autorefresh import st_autorefresh
 from src.nodes.functions import business_info
 from src.storage.containers.logs import LogsContainer
@@ -112,29 +111,24 @@ else:
 
         with st.chat_message("assistant"):
             query_embedding = model.get_embedding(query)
-            response_text, dental_service = asyncio.run(rag(client, query, groq_api_key, current_service, st.session_state["messages"], logs_container, user_id))
+            response_text, dental_service, input_tokens = asyncio.run(rag(client, query, groq_api_key, current_service, st.session_state["messages"]))
             if isinstance(response_text, dict):
+                # Log appointment form interaction
+                full_response ="book_appointment"
+                output_tokens = calculate_ceiling_tokens(count_tokens(full_response))  # Approximate token count
+                if logs_container and user_id:
+                    asyncio.run(logs_container.create_conversation_log(
+                        user_id=user_id,
+                        input_text=query,
+                        output_text=full_response,
+                        input_tokens=input_tokens,
+                        output_tokens=output_tokens,
+                        model_name="llama3-70b-8192",
+                        meta_data={"interaction_type": "appointment_form"}
+                    ))
 
                 full_response = response_text
                 props = full_response['data']['props']
-
-                # Log the input message and token count
-                token_usage = full_response.get('llm_output', {}).get('token_usage', {})
-                input_tokens = token_usage.get('prompt_tokens', 0)
-                output_tokens = token_usage.get('completion_tokens', 0)
-
-                # Log the interaction
-                logs_container.create_user_activity_log(
-                    user_id=user_id,
-                    session_id=st.session_state["session_id"],
-                    title="User Query",
-                    description=query,
-                    meta_data={
-                        "input_tokens": input_tokens,
-                        "output_tokens": output_tokens,
-                        "response": full_response
-                    }
-                )
 
                     # Create a form in Streamlit
                 with st.form(key='appointment_form'):
@@ -200,17 +194,29 @@ else:
                             st.error(f"Error booking appointment: {str(e)}")
 
             else:
-                # Handle streaming text response
-                full_response = ""
+                # Handle streaming text response using st.write_stream
                 try:
-                    # Use st.write instead of st.write_stream for non-streaming responses
-                    for token in stream_response(response_text, 0.0075):
-                        full_response += token
-                        st.write(token)
-                        st.empty()  # Clear the previous write
-                        
+                    message_placeholder = st.empty()
+                    full_response = asyncio.run(process_stream(response_text,message_placeholder,0.0075))
+                    
+                    # Log the conversation after successful streaming
+                    if logs_container and user_id:
+                        output_tokens = calculate_ceiling_tokens(count_tokens(full_response))  # Approximate token count
+                        asyncio.run(logs_container.create_conversation_log(
+                            user_id=user_id,
+                            input_text=query,
+                            output_text=full_response,
+                            input_tokens=input_tokens,
+                            output_tokens=output_tokens,
+                            model_name="llama3-70b-8192",
+                            meta_data={
+                                "interaction_type": "conversation",
+                                "dental_service": dental_service
+                            }
+                        ))
                 except Exception as e:
                     st.error(f"Error displaying response: {str(e)}")
+                    full_response = str(response_text)
                     
                 if dental_service in config['services']:
                     current_service = dental_service    

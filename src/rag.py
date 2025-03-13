@@ -1,54 +1,28 @@
 from groq import Groq
 import time
-from test import chat_with_llama, calculate_ceiling_tokens
-import json
+from test import chat_with_llama
+from src.utils.config import calculate_ceiling_tokens,count_tokens
 from src.utils.config import load_config
-from src.storage.containers.logs import LogsContainer
-from src.handlers.logging_handler import LLMLoggingHandler
-import tiktoken
+import asyncio
+import streamlit as st
 
-def count_tokens(text: str) -> int:
-    """Count tokens in text using tiktoken"""
-    encoding = tiktoken.get_encoding("cl100k_base")
-    return len(encoding.encode(text))
 
-async def rag(client, query, groq_api_key, current_service, chat_history, logs_container=None, user_id=None):
+
+async def rag(client, query, groq_api_key, current_service, chat_history):
     config, prompt = load_config()
-    
-    # Initialize logging handler if we have container and user_id
-    logging_handler = None
-    if logs_container and user_id:
-        logging_handler = LLMLoggingHandler(logs_container.sqlite_manager, user_id)
 
     if len(chat_history) > 7:
         recent_history = chat_history[-7:]
     else:
         recent_history = chat_history[:]
 
-    print(f"\n{'='*50}\n all_history: {recent_history}\n{'='*50}")
-
-
-    # Get response from chat_with_llama with token tracking
-    answer, dental_service,input_tokens,output_tokens = chat_with_llama(client, query, current_service, recent_history, logging_handler=logging_handler)
-
-    # Unpack result with token usage
-    if isinstance(answer, dict):
-        # Handle appointment form case
-        if logs_container and user_id:
-            await logs_container.create_conversation_log(
-                user_id=user_id,
-                input_text=query,
-                output_text="book_appointment",
-                input_tokens=input_tokens,
-                output_tokens=output_tokens,
-                model_name="llama3-70b-8192"
-            )
-        return answer, dental_service
-
-    # Handle business info case
-    print(f"\n{'='*50}\nUser message: {answer[1]}\n{'='*50}")
-    print(f"\n{'='*50}\n Context: {answer[0]}\n{'='*50}")
+    # Get response from chat_with_llama
+    answer, dental_service, input_tokens, output_tokens = chat_with_llama(client, query, current_service, recent_history)
     
+    # Handle appointment form case
+    if isinstance(answer, dict):
+        return answer, dental_service, input_tokens, output_tokens
+
     messages = [
         {
             "role": "system",
@@ -91,50 +65,47 @@ async def rag(client, query, groq_api_key, current_service, chat_history, logs_c
         max_tokens=8192,
         stream=True)
 
-    output_text = ""  # Initialize output_text to accumulate the response
-    # Accumulate streaming response and count tokens
-    for chunk in response:
-        if hasattr(chunk, 'choices') and chunk.choices and hasattr(chunk.choices[0], 'delta'):
-            token = chunk.choices[0].delta.content
-            if token:
-                output_text += token
-
-    # Count output tokens and ceiling to nearest 1000
-    chat_output_tokens = calculate_ceiling_tokens(count_tokens(output_text))
     chat_input_tokens = calculate_ceiling_tokens(count_tokens(str(messages)))
+    total_input_tokens = input_tokens + chat_input_tokens
 
-    # Add up all token usage
-    total_input_tokens = calculate_ceiling_tokens(input_tokens + chat_input_tokens)
-    total_output_tokens = calculate_ceiling_tokens(output_tokens + chat_output_tokens)
+    return response, dental_service, total_input_tokens
 
-    if logs_container and user_id:
-        await logs_container.create_conversation_log(
-            user_id=user_id,
-            input_text=query,
-            output_text=output_text,
-            input_tokens=total_input_tokens,
-            output_tokens=total_output_tokens,
-            model_name="llama3-70b-8192"
-        )
-
-    return response,dental_service    
-
-def stream_response(response_text, delay):
+async def stream_response(response_text, delay):
     """
     Generator that processes each chunk from the API response.
     It extracts the token, appends it to a cumulative string,
     and yields the token for further processing.
     """
-    content_response = ""    
-    for chunk in response_text:
-        if hasattr(chunk, 'choices') and chunk.choices and hasattr(chunk.choices[0], 'delta'):
-            token = chunk.choices[0].delta.content
+    content_response = ""
+    try:
+        for chunk in response_text:
+            if not hasattr(chunk, 'choices') or not chunk.choices:
+                continue
+                
+            choice = chunk.choices[0]
+            if not hasattr(choice, 'delta'):
+                continue
+                
+            token = choice.delta.content
             if token:
                 content_response += token
                 yield token
-                time.sleep(delay)
-    
-    print(f"\n{'='*50}\nAnswer: {content_response}\n{'='*50}")
+                if delay > 0:
+                    time.sleep(delay)
+                            
+    except Exception as e:
+        print(f"Error in stream_response: {str(e)}")
+        if content_response:
+            yield content_response
+        else:
+            yield str(response_text)
        
-    
+
+async def process_stream(response_text,message_placeholder,delay):
+    content_response = ""
+    async for token in stream_response(response_text,delay):
+        content_response += token
+        message_placeholder.markdown(content_response + "▌")
+    message_placeholder.markdown(content_response)
+    return content_response    
     

@@ -7,6 +7,7 @@ import logging
 from src.storage.database_manager import SQLiteManager
 from src.storage.containers.logs import LogsContainer
 import math
+import json
 
 class LLMLoggingHandler(BaseCallbackHandler):
     """Callback handler for logging LLM interactions with cost tracking."""

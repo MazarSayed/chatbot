@@ -8,7 +8,7 @@ from src.nodes.functions import book_appointment, business_info
 from tools import tools
 import streamlit as st
 from src.handlers.logging_handler import LLMLoggingHandler
-import math
+from src.utils.config import calculate_ceiling_tokens
 
 config, prompt = load_config()
 load_dotenv()
@@ -22,9 +22,8 @@ PROMPT = """You are a helpful virtual dental concierge for a Dental Care Website
         - Make sure to analzye the chat_history and the input user_query before generating question_description 
         - Make sure you remember the last service user talked about, and use it to generate the right question_description """.format(config["services"])
 
-def calculate_ceiling_tokens(tokens: int) -> int:
-    """Calculate ceiling to nearest 1000 for token count"""
-    return math.ceil(tokens / 1000) * 1000
+
+
 
 def chat_with_llama(client, query, current_service, recent_history, logging_handler=None):
     # Initialize messages with system prompt

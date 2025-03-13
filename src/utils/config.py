@@ -6,6 +6,8 @@ import logging
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from src.utils.docx_to_txt import convert_docs_to_markdown, read_folder_to_text_df
+import math
+import tiktoken
 
 class EmbeddingModel:
     _instance = None
@@ -132,3 +134,12 @@ def populate_chroma_db(chroma_manager):
     chroma_manager.batch_add_question_answers(embeddings, questions, answers, buttons_list)
     
     print("Chroma DB qa populated")
+
+def calculate_ceiling_tokens(tokens: int) -> int:
+    """Calculate ceiling to nearest 1000 for token count"""
+    return math.ceil(tokens / 1000) * 1000
+
+def count_tokens(text: str) -> int:
+    """Count tokens in text using tiktoken"""
+    encoding = tiktoken.get_encoding("cl100k_base")
+    return len(encoding.encode(text))
