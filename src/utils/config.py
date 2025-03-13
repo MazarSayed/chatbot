@@ -5,7 +5,7 @@ import os
 import logging
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
-from src.utils.docx_to_txt import read_folder_to_text_df
+from src.utils.docx_to_txt import convert_docs_to_markdown, read_folder_to_text_df
 
 class EmbeddingModel:
     _instance = None
@@ -81,6 +81,13 @@ def load_question_answer():
     question_answer = load_yaml(question_answer_path)
     return question_answer
 
+def load_doc():
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    dental_implants_path = os.path.join(dir_path,"..","..","data","dental_implants.yaml")
+    logging.debug("Loading doc's")
+    dental_implants_doc = load_yaml(dental_implants_path)
+    return dental_implants_doc[0]['Doc']
+
 def populate_chroma_db_doc(chroma_manager):
     print("Populating Chroma DB with doc's...")
     dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -106,6 +113,8 @@ def populate_chroma_db_doc(chroma_manager):
 # Function to populate Chroma DB with examples
 def populate_chroma_db(chroma_manager):
     logging.info("Populating Chroma DB with qa's...")
+    print("Populating Chroma DB with qa's...")
+
     question_answer = load_question_answer()
     
     # Use singleton model instance
@@ -114,12 +123,12 @@ def populate_chroma_db(chroma_manager):
     # Prepare data for batch processing
     questions = [qa["question"] for qa in question_answer]
     answers = [qa["answer"] for qa in question_answer]
-    buttons_list = [qa["buttons"] for qa in question_answer]
+    buttons_list = [qa.get("buttons", {}) for qa in question_answer]  # Use get() with default empty dict
     
     # Get embeddings for all questions at once
     embeddings = model.get_embedding(questions)
     
-    # Add all QAs in a single batch
-    chroma_manager.batch_add_question_answers(embeddings, questions, answers)
+    # Add all QAs in a single batch, including buttons
+    chroma_manager.batch_add_question_answers(embeddings, questions, answers, buttons_list)
     
-    logging.info("Chroma DB populated")
+    print("Chroma DB qa populated")

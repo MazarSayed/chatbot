@@ -29,25 +29,25 @@ async def rag(client, query, groq_api_key, current_service, chat_history, logs_c
 
 
     # Get response from chat_with_llama with token tracking
-    Context, dental_service, token_usage = chat_with_llama(client, query, current_service, recent_history, logging_handler=logging_handler)
+    answer, dental_service,input_tokens,output_tokens = chat_with_llama(client, query, current_service, recent_history, logging_handler=logging_handler)
 
     # Unpack result with token usage
-    if isinstance(Context, dict):
+    if isinstance(answer, dict):
         # Handle appointment form case
         if logs_container and user_id:
             await logs_container.create_conversation_log(
                 user_id=user_id,
                 input_text=query,
                 output_text="book_appointment",
-                input_tokens=token_usage["input_tokens"],
-                output_tokens=token_usage["output_tokens"],
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
                 model_name="llama3-70b-8192"
             )
-        return Context, dental_service
+        return answer, dental_service
 
     # Handle business info case
-    print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
-    print(f"\n{'='*50}\n Context: {Context}\n{'='*50}")
+    print(f"\n{'='*50}\nUser message: {answer[1]}\n{'='*50}")
+    print(f"\n{'='*50}\n Context: {answer[0]}\n{'='*50}")
     
     messages = [
         {
@@ -68,13 +68,13 @@ async def rag(client, query, groq_api_key, current_service, chat_history, logs_c
     user_message = {
         "role": "user",
         "content": f""" 
-                    My_Question: {query}\n
-                    Context: {Context}. \n
+                    My_Question: {answer[1]}\n
+                    Context: {answer[0]}. \n
                     dental_service: {dental_service}
 
                     Follow the steps given below:
                         1. Analyze My_Question and Context given above.
-                        2. Provide a brief response to answer My_Question using the Context mainly.
+                        2. Provide a response to answer My_Question using the Context mainly.
                         3. Output your short response in the structured format with appropriate line breaks and bolds only when needed.
 
                     Note: Provide very detailed long answers for questions only on treatment plan and after care for the dental services
@@ -91,19 +91,21 @@ async def rag(client, query, groq_api_key, current_service, chat_history, logs_c
         max_tokens=8192,
         stream=True)
 
+    output_text = ""  # Initialize output_text to accumulate the response
     # Accumulate streaming response and count tokens
-    output_text = ""
     for chunk in response:
-        if chunk.choices[0].delta.content:
-            output_text += chunk.choices[0].delta.content
+        if hasattr(chunk, 'choices') and chunk.choices and hasattr(chunk.choices[0], 'delta'):
+            token = chunk.choices[0].delta.content
+            if token:
+                output_text += token
 
     # Count output tokens and ceiling to nearest 1000
     chat_output_tokens = calculate_ceiling_tokens(count_tokens(output_text))
     chat_input_tokens = calculate_ceiling_tokens(count_tokens(str(messages)))
 
     # Add up all token usage
-    total_input_tokens = calculate_ceiling_tokens(token_usage["input_tokens"] + chat_input_tokens)
-    total_output_tokens = calculate_ceiling_tokens(token_usage["output_tokens"] + chat_output_tokens)
+    total_input_tokens = calculate_ceiling_tokens(input_tokens + chat_input_tokens)
+    total_output_tokens = calculate_ceiling_tokens(output_tokens + chat_output_tokens)
 
     if logs_container and user_id:
         await logs_container.create_conversation_log(

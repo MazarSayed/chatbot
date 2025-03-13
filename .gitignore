@@ -13,7 +13,11 @@ __pycache__/
 
 # C extensions
 *.so
-
+*.docx 
+*.pdf
+*.txt
+*.md
+*.db
 # Distribution / packaging
 .Python
 build/
@@ -85,6 +89,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+*.ipynb
 
 # IPython
 profile_default/

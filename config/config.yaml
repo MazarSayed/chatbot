@@ -5,7 +5,7 @@ services: ['invisalign','teeth cleaning','dental checkup','emergency dental care
 chroma_path: ./chroma_db
 time_out : 10
 
-inactivity_timeout : 60,  # Threshold for user inactivity (seconds) 
+inactivity_timeout : 60,  # Threshold for user inactivity (seconds)
 refresh_interval : 5 
 welcome_message : "Hello! Welcome to Brookline Progressive Dental Team. I'm Luna, your dedicated smile concierge, 
                   here to help you find the perfect dental care just for you.

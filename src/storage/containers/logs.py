@@ -70,7 +70,10 @@ class ConversationLog(BaseModel):
     meta_data: Dict[str, Any] = Field(default_factory=dict)
     created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
-    type: str = "conversation"
+    type: str = "conversation"  # Always set a default type
+
+    class Config:
+        validate_assignment = True
 
 class LogsContainer:
     def __init__(self, sqlite_manager: SQLiteManager):
@@ -191,7 +194,11 @@ class LogsContainer:
         input_text: str,
         session_id: Optional[str] = None,
         conversation_id: Optional[str] = None,
-        meta_data: Optional[Dict[str, Any]] = None
+        meta_data: Optional[Dict[str, Any]] = None,
+        output_text: Optional[str] = None,
+        input_tokens: Optional[int] = None,
+        output_tokens: Optional[int] = None,
+        model_name: Optional[str] = None
     ) -> Dict:
         """Create a new conversation log entry"""
         log = ConversationLog(
@@ -199,7 +206,12 @@ class LogsContainer:
             conversation_id=conversation_id or str(uuid.uuid4()),
             user_id=user_id,
             input_text=input_text,
-            meta_data=meta_data or {}
+            output_text=output_text,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            model_name=model_name or "llama3-70b-8192",
+            meta_data=meta_data or {},
+            type="conversation"  # Explicitly set type
         )
         
         return self.sqlite_manager.create_item(log.dict())

@@ -4,6 +4,8 @@ from sqlalchemy.exc import NoResultFound, IntegrityError
 from typing import Dict, List, Optional, Any
 import logging
 import math
+from datetime import datetime, timezone
+import json
 
 # Define the base class for SQLAlchemy models
 Base = declarative_base()
@@ -24,7 +26,13 @@ class LogActivity(Base):
     total_tokens = Column(Integer, nullable=True)
     cost_usd = Column(Float, nullable=True)
     model_name = Column(String, nullable=True)
-    meta_data = Column(Text, nullable=True)
+    meta_data = Column(Text, nullable=True, default='{}')  # Store as JSON string with default empty object
+
+    def __init__(self, **kwargs):
+        # Convert meta_data dict to JSON string if it's a dict
+        if 'meta_data' in kwargs and isinstance(kwargs['meta_data'], dict):
+            kwargs['meta_data'] = json.dumps(kwargs['meta_data'])
+        super().__init__(**kwargs)
 
 class SQLiteManager:
     # Cost per 1000 tokens (adjust as needed)
@@ -36,7 +44,8 @@ class SQLiteManager:
     def __init__(self, DATABASE_URL: str):
         self.engine = create_engine(DATABASE_URL, echo=True)
         self.SessionLocal = sessionmaker(bind=self.engine)
-        Base.metadata.create_all(self.engine)  # Create tables if they don't exist
+        self.drop_tables()  # Drop existing tables
+        Base.metadata.create_all(self.engine)  # Create tables with the updated schema
 
     def calculate_cost(self, model_name: str, input_tokens: int, output_tokens: int) -> float:
         """Calculate cost based on ceiling of token counts to nearest 1000"""
@@ -58,6 +67,20 @@ class SQLiteManager:
         """Create a new item in the database."""
         session = self.get_session()
         try:
+            # Convert ISO format datetime strings to datetime objects
+            if 'created_at' in item:
+                item['created_at'] = datetime.fromisoformat(item['created_at'])
+            if 'updated_at' in item:
+                item['updated_at'] = datetime.fromisoformat(item['updated_at'])
+            
+            # Ensure type field is not None
+            if 'type' not in item or item['type'] is None:
+                item['type'] = 'conversation'  # Default type
+            
+            # Convert dictionary fields to JSON strings
+            if 'meta_data' in item and isinstance(item['meta_data'], dict):
+                item['meta_data'] = json.dumps(item['meta_data'])
+            
             new_item = LogActivity(**item)  # Assuming item is a dict matching the model
             session.add(new_item)
             session.commit()
@@ -65,6 +88,10 @@ class SQLiteManager:
             return new_item.__dict__  # Return the created item as a dictionary
         except IntegrityError as e:
             logging.error(f"Failed to create item: {str(e)}")
+            session.rollback()
+            return None
+        except Exception as e:
+            logging.error(f"Failed to create item with error: {str(e)}")
             session.rollback()
             return None
         finally:
@@ -89,6 +116,17 @@ class SQLiteManager:
         session = self.get_session()
         try:
             item = session.query(LogActivity).filter(LogActivity.session_id == session_id).one()
+            
+            # Convert ISO format datetime strings to datetime objects
+            if 'created_at' in updates:
+                updates['created_at'] = datetime.fromisoformat(updates['created_at'])
+            if 'updated_at' in updates:
+                updates['updated_at'] = datetime.fromisoformat(updates['updated_at'])
+            
+            # Convert dictionary fields to JSON strings
+            if 'meta_data' in updates and isinstance(updates['meta_data'], dict):
+                updates['meta_data'] = json.dumps(updates['meta_data'])
+            
             for key, value in updates.items():
                 setattr(item, key, value)
             session.commit()
@@ -118,3 +156,8 @@ class SQLiteManager:
             return False
         finally:
             session.close()
+
+    def drop_tables(self):
+        """Drop all tables in the database."""
+        Base.metadata.drop_all(self.engine)
+         
