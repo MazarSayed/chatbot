@@ -48,12 +48,29 @@ class LogLLMRequestActivity(LogActivityBase):
     duration_seconds: Optional[float] = None
     token_usage: Optional[TokenUsage] = None
     cost_usd: Optional[float] = None
-    metadata: LLMRequestDetails
+    meta_data: LLMRequestDetails
 
 class UserActivityLog(LogActivityBase):
     """Model for general user activity logs"""
     type: str = "user_activity"
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    meta_data: Dict[str, Any] = Field(default_factory=dict)
+
+class ConversationLog(BaseModel):
+    """Model for conversation logs"""
+    session_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    conversation_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    input_text: str
+    output_text: Optional[str] = None
+    input_tokens: Optional[int] = None
+    output_tokens: Optional[int] = None
+    total_tokens: Optional[int] = None
+    cost_usd: Optional[float] = None
+    model_name: str = "llama3-70b-8192"
+    meta_data: Dict[str, Any] = Field(default_factory=dict)
+    created_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    updated_at: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    type: str = "conversation"
 
 class LogsContainer:
     def __init__(self, sqlite_manager: SQLiteManager):
@@ -91,7 +108,7 @@ class LogsContainer:
             run_id=run_id,
             model_name=model_name,
             start_time=datetime.now(timezone.utc).isoformat(),
-            metadata=request_details
+            meta_data=request_details
         )
         
         return self.sqlite_manager.create_item(activity.dict())  # Use the SQLite manager to create the item
@@ -156,14 +173,82 @@ class LogsContainer:
         user_id: str,
         title: str,
         description: str,
-        metadata: Optional[Dict[str, Any]] = None
+        meta_data: Optional[Dict[str, Any]] = None
     ) -> Dict:
         """Create a new user activity log"""
         activity = UserActivityLog(
             user_id=user_id,
             title=title,
             description=description,
-            metadata=metadata or {}
+            meta_data=meta_data or {}
         )
         
-        return self.sqlite_manager.create_item(activity.dict())  # Use the SQLite manager to create the item 
+        return self.sqlite_manager.create_item(activity.dict())  # Use the SQLite manager to create the item
+
+    async def create_conversation_log(
+        self,
+        user_id: str,
+        input_text: str,
+        session_id: Optional[str] = None,
+        conversation_id: Optional[str] = None,
+        meta_data: Optional[Dict[str, Any]] = None
+    ) -> Dict:
+        """Create a new conversation log entry"""
+        log = ConversationLog(
+            session_id=session_id or str(uuid.uuid4()),
+            conversation_id=conversation_id or str(uuid.uuid4()),
+            user_id=user_id,
+            input_text=input_text,
+            meta_data=meta_data or {}
+        )
+        
+        return self.sqlite_manager.create_item(log.dict())
+
+    async def update_conversation_log(
+        self,
+        session_id: str,
+        output_text: str,
+        input_tokens: int,
+        output_tokens: int,
+        model_name: str = "llama3-70b-8192"
+    ) -> Optional[Dict]:
+        """Update an existing conversation log with response and token usage"""
+        total_tokens = input_tokens + output_tokens
+        cost_usd = self.sqlite_manager.calculate_cost(model_name, input_tokens, output_tokens)
+        
+        updates = {
+            "output_text": output_text,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "total_tokens": total_tokens,
+            "cost_usd": cost_usd,
+            "model_name": model_name,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        return self.sqlite_manager.update_item(session_id, updates)
+
+    async def get_conversation_logs(
+        self,
+        user_id: Optional[str] = None,
+        session_id: Optional[str] = None,
+        conversation_id: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
+    ) -> List[Dict]:
+        """Get conversation logs with filtering options"""
+        session = self.sqlite_manager.get_session()
+        query = session.query(ConversationLog).filter(ConversationLog.type == "conversation")
+
+        if user_id:
+            query = query.filter(ConversationLog.user_id == user_id)
+        if session_id:
+            query = query.filter(ConversationLog.session_id == session_id)
+        if conversation_id:
+            query = query.filter(ConversationLog.conversation_id == conversation_id)
+        if start_date:
+            query = query.filter(ConversationLog.created_at >= start_date)
+        if end_date:
+            query = query.filter(ConversationLog.created_at <= end_date)
+
+        return [item.__dict__ for item in query.all()] 

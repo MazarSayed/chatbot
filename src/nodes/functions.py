@@ -96,4 +96,4 @@ def book_appointment()->str:
         }
     }
     dental_service = 'none'
-    return dict(appointment_widget)
+    return dict(appointment_widget),dental_service

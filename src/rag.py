@@ -1,11 +1,24 @@
 from groq import Groq
 import time
-from test import chat_with_llama
+from test import chat_with_llama, calculate_ceiling_tokens
 import json
 from src.utils.config import load_config
+from src.storage.containers.logs import LogsContainer
+from src.handlers.logging_handler import LLMLoggingHandler
+import tiktoken
 
-def rag(client, query, groq_api_key, current_service, chat_history):
-    config,prompt = load_config()
+def count_tokens(text: str) -> int:
+    """Count tokens in text using tiktoken"""
+    encoding = tiktoken.get_encoding("cl100k_base")
+    return len(encoding.encode(text))
+
+async def rag(client, query, groq_api_key, current_service, chat_history, logs_container=None, user_id=None):
+    config, prompt = load_config()
+    
+    # Initialize logging handler if we have container and user_id
+    logging_handler = None
+    if logs_container and user_id:
+        logging_handler = LLMLoggingHandler(logs_container.sqlite_manager, user_id)
 
     if len(chat_history) > 7:
         recent_history = chat_history[-7:]
@@ -14,12 +27,25 @@ def rag(client, query, groq_api_key, current_service, chat_history):
 
     print(f"\n{'='*50}\n all_history: {recent_history}\n{'='*50}")
 
-    answers = chat_with_llama(client, query,current_service, recent_history)
-    if isinstance(answers, dict):
-        return answers  # Return appointment form if answer is a dict
-    
-    # Flatten the list of answers if it's a list of lists
-    Context = answers[0]
+
+    # Get response from chat_with_llama with token tracking
+    Context, dental_service, token_usage = chat_with_llama(client, query, current_service, recent_history, logging_handler=logging_handler)
+
+    # Unpack result with token usage
+    if isinstance(Context, dict):
+        # Handle appointment form case
+        if logs_container and user_id:
+            await logs_container.create_conversation_log(
+                user_id=user_id,
+                input_text=query,
+                output_text="book_appointment",
+                input_tokens=token_usage["input_tokens"],
+                output_tokens=token_usage["output_tokens"],
+                model_name="llama3-70b-8192"
+            )
+        return Context, dental_service
+
+    # Handle business info case
     print(f"\n{'='*50}\nUser message: {query}\n{'='*50}")
     print(f"\n{'='*50}\n Context: {Context}\n{'='*50}")
     
@@ -39,12 +65,12 @@ def rag(client, query, groq_api_key, current_service, chat_history):
     ]
     messages.extend(recent_history)
 
-    # Create the current user message
     user_message = {
         "role": "user",
         "content": f""" 
                     My_Question: {query}\n
                     Context: {Context}. \n
+                    dental_service: {dental_service}
 
                     Follow the steps given below:
                         1. Analyze My_Question and Context given above.
@@ -57,57 +83,39 @@ def rag(client, query, groq_api_key, current_service, chat_history):
     }
     messages.append(user_message)
 
+    # Get streaming response from LLM
     response = client.chat.completions.create(
         model="llama3-70b-8192",
         messages=messages,
         temperature=0.5,
         max_tokens=8192,
         stream=True)
-    # Process the streamed response to get the complete text
-    # response_text = ""
-    # for chunk in response:
-    #     if chunk.choices[0].delta.content:
-    #         response_text += chunk.choices[0].delta.content
-    #         if "<output>" in response_text and "</output>" in response_text:
-    #             start = response_text.find("<output>") + len("<output>")
-    #             end = response_text.find("</output>")
-    #             response_text = response_text[start:end].strip()
-    #             print("struct_response:",response_text)
 
-    # try:
-    #     # Parse the JSON response
-    #     json_response = json.loads(response_text)
-    #     # Extract status and final_answer, with fallbacks
-    #     status = json_response.get("status", "")
-    #     final_answer = json_response.get("final_response", "")
-        
-    #     # If we got a valid response, use it
-    #     if status and final_answer:
-    #         is_relevant = (status == "Relevant")
-    #     else:
-    #         # If missing required fields, treat as invalid JSON
-    #         raise json.JSONDecodeError("Missing required fields", response_text, 0)
-            
-    # except json.JSONDecodeError as e:
-    #     print(f"JSON decoding error: {e}")
+    # Accumulate streaming response and count tokens
+    output_text = ""
+    for chunk in response:
+        if chunk.choices[0].delta.content:
+            output_text += chunk.choices[0].delta.content
 
-    #     # If JSON parsing fails or invalid format, use original answer
-    #     final_answer = json_response.split('final_response":')[1].strip().rstrip('}')
-    #     is_relevant = True  # Default to showing buttons
+    # Count output tokens and ceiling to nearest 1000
+    chat_output_tokens = calculate_ceiling_tokens(count_tokens(output_text))
+    chat_input_tokens = calculate_ceiling_tokens(count_tokens(str(messages)))
 
-    # except Exception as e:
-    #     print(f"An error occurred: {e}")
-    #     final_answer = "An unexpected error occurred."
-    #     is_relevant = False  
+    # Add up all token usage
+    total_input_tokens = calculate_ceiling_tokens(token_usage["input_tokens"] + chat_input_tokens)
+    total_output_tokens = calculate_ceiling_tokens(token_usage["output_tokens"] + chat_output_tokens)
 
-    #print(f"\n{'='*50}\nAnswer: {response}\n{'='*50}")
+    if logs_container and user_id:
+        await logs_container.create_conversation_log(
+            user_id=user_id,
+            input_text=query,
+            output_text=output_text,
+            input_tokens=total_input_tokens,
+            output_tokens=total_output_tokens,
+            model_name="llama3-70b-8192"
+        )
 
-    # Return the final answer and buttons based on relevance
-    #final_buttons = buttons 
-    #print("Final Buttons:",final_buttons)
-    print(f"\n{'='*50}\nAnswer: {response}\n{'='*50}")
-    return response,answers[1]
-
+    return response,dental_service    
 
 def stream_response(response_text, delay):
     """
@@ -117,11 +125,13 @@ def stream_response(response_text, delay):
     """
     content_response = ""    
     for chunk in response_text:
+        if hasattr(chunk, 'choices') and chunk.choices and hasattr(chunk.choices[0], 'delta'):
             token = chunk.choices[0].delta.content
-            time.sleep(delay)
             if token:
                 content_response += token
                 yield token
+                time.sleep(delay)
+    
     print(f"\n{'='*50}\nAnswer: {content_response}\n{'='*50}")
        
     

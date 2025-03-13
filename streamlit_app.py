@@ -131,7 +131,7 @@ else:
                     user_id=user_id,
                     title="User Query",
                     description=query,
-                    metadata={
+                    meta_data={
                         "input_tokens": input_tokens,
                         "output_tokens": output_tokens,
                         "response": full_response
