@@ -35,6 +35,7 @@ def rag(client, query, groq_api_key, current_service, chat_history):
                 "Use the given Context to generate a response to the question in detail"
                 "Provide answers in a structred format with appropriate line breaks and bolds only when needed."
                 "Makse sure curate your response to showcase the brand of Brookline Dental Team"
+                "If the user asks about the appointment form, send out the appointment form to the user in the chatbot"
                 "Here is your welcome message = {}".format(config['welcome_message'])
             )
         }
@@ -50,14 +51,13 @@ def rag(client, query, groq_api_key, current_service, chat_history):
                     Dental_Service: {dental_service}
 
                     Follow the steps given below:
-                        1. Using the Context provide a response only to answer the Question mainly, be concise and to the point.
+                        1. Using the Context provide a response only to answer the Question in 3 -4 sentences
                         Note: Do not provide any additional information than requrired for the Question.
-                        2. Do not provide any additional information than requrired for the Question.
-                        3. Output your response in the structured format with appropriate line breaks and bolds only when needed.
-                        4. If the asnwer to the Question is not the Context and is regarding the dental clinic:
+                        2. Output your response in the structured format with appropriate line breaks and bolds only when needed.
+                        3. If the asnwer to the Question is not the Context and is regarding the dental clinic:
                            Then provide a tattical response to keep the conversation going and ask the user to contact the website for more information.
 
-                    Note: Provide very detailed long answers for questions only on treatment plan and after care for the dental services
+                    Note: Provide very detailed 5-6 sentence answers for questions only on treatment plan and after care for the dental services
                     Provide the output by making sure you follow above steps with no additional text.
                     Do not provide topics in the response, but structure your response with appropriate line breaks and bolds only when needed.
                     """
