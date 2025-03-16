@@ -33,9 +33,9 @@ def rag(client, query, groq_api_key, current_service, chat_history):
                 "Your name is Luna, you are very patient, friendly and polite. "
                 "Your users will ask questions about our Dental Services and Dental Care in general. "
                 "Use the given Context to generate a response to the question in detail"
-                "Provide answers in a structred format with appropriate line breaks and bolds only when needed."
+                "Provide answers in a structred format with appropriate line breaks and bolds only when needed like virtual dental concierge"
                 "Makse sure curate your response to showcase the brand of Brookline Dental Team"
-                "If the user asks about the appointment form, send out the appointment form to the user in the chatbot"
+                "If the user asks about the appointment form, send out the appointment form to the user as a reply"
                 "Here is your welcome message = {}".format(config['welcome_message'])
             )
         }
@@ -48,18 +48,18 @@ def rag(client, query, groq_api_key, current_service, chat_history):
         "content": f""" 
                     Question: {answers[2]}\n
                     Context: {Context}. \n
-                    Dental_Service: {dental_service}
+                    Dental_Service: {dental_service}\n
 
-                    Follow the steps given below:
-                        1. Using the Context provide a response only to answer the Question in 3 -4 sentences
-                        Note: Do not provide any additional information than requrired for the Question.
-                        2. Output your response in the structured format with appropriate line breaks and bolds only when needed.
-                        3. If the asnwer to the Question is not the Context and is regarding the dental clinic:
-                           Then provide a tattical response to keep the conversation going and ask the user to contact the website for more information.
+                    Follow the steps given below:\n
+                        1. Using the Context provide a response only to answer the Question in 3 -4 sentences\n
+                        Note: Do not provide any additional information than requrired for the Question.\n
+                        2. Output your response in the structured format with appropriate line breaks and bolds only when needed like a virtual dental concierge.\n
+                        3. If the answer to the Question is not in the Context and is regarding the dental clinic & the business:\n
+                           Then provide a tattical response to keep the conversation going and ask the user to contact the frontoffice by filling out the appointment form for more information.\n\n
 
-                    Note: Provide very detailed 5-6 sentence answers for questions only on treatment plan and after care for the dental services
-                    Provide the output by making sure you follow above steps with no additional text.
-                    Do not provide topics in the response, but structure your response with appropriate line breaks and bolds only when needed.
+                    Note: Provide very detailed 6-7 sentence answers for questions only based on treatment plan and after care for the dental services.\n
+                    Provide the output by making sure you follow above steps with no additional text.\n
+                    Do not provide topics in the response, but structure your response with appropriate line breaks and bolds only when needed like a virtual dental concierge.\n
                     """
     }
     messages.append(user_message)
