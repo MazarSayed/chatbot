@@ -1,11 +1,8 @@
 import os
 from docx import Document
 import sys
-import fitz  
 import pandas as pd
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-import pymupdf4llm
-
 
 def convert_docs_to_markdown(folder_path):
     # Initialize a string to hold the combined Markdown content
