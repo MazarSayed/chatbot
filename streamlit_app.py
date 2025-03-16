@@ -14,13 +14,13 @@ from src.utils.config import EmbeddingModel
 from src.nodes.functions import business_info
 from datetime import datetime
 from groq import Groq
-from src.database.chroma_manager import ChromaManager
-from src.utils.config import populate_chroma_db_doc
 import sqlite3
 # Log SQLite version for debugging
 print(f"SQLite version: {sqlite3.sqlite_version}")
 
 # Load configuration and environment variables
+from src.database.chroma_manager import ChromaManager
+from src.utils.config import populate_chroma_db_doc
 config,prompt = load_config()
 load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
