@@ -35,6 +35,18 @@ load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 client = Groq(api_key=groq_api_key)
 
+# Function to initialize the system
+st.set_page_config(
+    page_title="Luna: helpful virtual dental concierge",
+    layout="wide",
+    initial_sidebar_state="auto",
+    menu_items={
+        'Get Help': 'https://www.streamlit.io/',
+        'Report a bug': "https://github.com/streamlit/streamlit/issues",
+        'About': "# This is a Streamlit app!"
+    }
+)
+
 # Only import ChromaDB related modules and initialize if not already done
 try:
         # Import here to ensure SQLite fix is applied first
@@ -63,17 +75,7 @@ except Exception as e:
 def clear_submit():
     st.session_state["submit"] = False
 
-# Function to initialize the system
-st.set_page_config(
-    page_title="Luna: helpful virtual dental concierge",
-    layout="wide",
-    initial_sidebar_state="auto",
-    menu_items={
-        'Get Help': 'https://www.streamlit.io/',
-        'Report a bug': "https://github.com/streamlit/streamlit/issues",
-        'About': "# This is a Streamlit app!"
-    }
-)
+
 
 st.title("Luna: helpful virtual dental concierge")
 response_text = ""
