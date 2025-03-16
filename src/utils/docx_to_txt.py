@@ -190,24 +190,10 @@ def extract_pdf_content_with_pypdf(pdf_file_path, paragraph_separator="new parag
     Returns:
         list: List of text chunks split by paragraphs
     """
-    try:
-    except ImportError:
-        print("PyPDF2 not found. Please install it using: pip install PyPDF2")
-        return []
-        
-    if not os.path.exists(pdf_file_path):
-        print(f"Error: File not found - {pdf_file_path}")
-        return []
-        
-    if not pdf_file_path.endswith(".pdf"):
-        print(f"Error: File is not a PDF - {pdf_file_path}")
-        return []
-    
-    try:
         # Open the PDF file with PyPDF2
-        full_text = ""
+    full_text = ""
         
-        with open(pdf_file_path, 'rb') as file:
+    with open(pdf_file_path, 'rb') as file:
             pdf_reader = PyPDF2.PdfReader(file)
             
             # Extract text from each page
@@ -224,19 +210,16 @@ def extract_pdf_content_with_pypdf(pdf_file_path, paragraph_separator="new parag
                     full_text += page_text + " "
         
         # Split the text by the paragraph separator
-        split_texts = full_text.split(paragraph_separator)
+    split_texts = full_text.split(paragraph_separator)
         
         # Clean and filter the text chunks
-        cleaned_texts = []
-        for text in split_texts:
+    cleaned_texts = []
+    for text in split_texts:
             # Clean up whitespace and normalize text
             cleaned = " ".join(text.split())
             if cleaned:
                 cleaned_texts.append(cleaned)
         
-        print(f"Extracted {len(cleaned_texts)} chunks from {os.path.basename(pdf_file_path)}")
-        return cleaned_texts
-        
-    except Exception as e:
-        print(f"Error processing {pdf_file_path}: {str(e)}")
-        return []
+    print(f"Extracted {len(cleaned_texts)} chunks from {os.path.basename(pdf_file_path)}")
+    return cleaned_texts
+    
