@@ -15,7 +15,9 @@ from streamlit_autorefresh import st_autorefresh
 from src.nodes.functions import business_info
 from datetime import datetime
 from groq import Groq
-
+from src.database.chroma_manager import ChromaManager
+from src.utils.config import populate_chroma_db_doc
+import sqlite3
 # Log SQLite version for debugging
 print(f"SQLite version: {sqlite3.sqlite_version}")
 
@@ -49,11 +51,26 @@ st.set_page_config(
             'About': "# This is a Streamlit app!"}
         )  
 
+
+sqlite_version = tuple(map(int, sqlite3.sqlite_version.split('.')))
+if sqlite_version < (3, 35, 0):
+    st.error(f"ChromaDB requires SQLite version >= 3.35.0, but you have {sqlite3.sqlite_version}. " 
+                     "Please see container setup instructions.")
+    print(f"SQLite version incompatible: {sqlite3.sqlite_version}")
+else:
+            # Initialize ChromaDB
+    chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
+    populate_chroma_db_doc(chroma_manager)
+    st.session_state["chroma_manager"] = chroma_manager
+    print("ChromaDB initialized successfully.")
+
+
 st.title("Luna: helpful virtual dental concierge")
 #groq_api_key = st.text_input("Groq API Key", type="password")
 response_text = ""
 model = EmbeddingModel.get_instance()
 current_service = 'None' 
+
 if not groq_api_key:
     st.info("Please add your Groq API key to continue.", icon="🗝️")
 else:
