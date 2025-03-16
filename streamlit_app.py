@@ -31,8 +31,15 @@ load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 client = Groq(api_key=groq_api_key)
 chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
-#populate_chroma_db(chroma_manager)
 populate_chroma_db_doc(chroma_manager)
+
+# Check if initialization has already been done
+#if "initialized" not in st.session_state or st.session_state["initialized"] is None:
+#    st.session_state["initialized"] = True
+#    #populate_chroma_db(chroma_manager)
+
+
+#print("initialized:",  st.session_state["initialized"] )
 
 def clear_submit():
       st.session_state["submit"] = False
@@ -174,12 +181,9 @@ else:
                 # Handle streaming text response
                 full_response = ""
                 try:
-                    # Use st.write instead of st.write_stream for non-streaming responses
-                    for token in stream_response(response_text, 0.0075):
-                        full_response += token
-                        st.write(token)
-                        st.empty()  # Clear the previous write
-                        
+                    full_response = st.write_stream(stream_response(response_text, 0.0075))
+                   
+                   
                 except Exception as e:
                     st.error(f"Error displaying response: {str(e)}")
                     

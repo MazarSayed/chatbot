@@ -11,3 +11,4 @@ python-docx
 fitz
 frontend
 pymupdf4llm
+sentence_transformers

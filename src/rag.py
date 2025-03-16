@@ -33,7 +33,7 @@ def rag(client, query, groq_api_key, current_service, chat_history):
                 "Your name is Luna, you are very patient, friendly and polite. "
                 "Your users will ask questions about our Dental Services and Dental Care in general. "
                 "Use the given Context to generate a response to the question in detail"
-                "Provide a short answers in a structred format with appropriate line breaks and bolds only when needed."
+                "Provide answers in a structred format with appropriate line breaks and bolds only when needed."
                 "Makse sure curate your response to showcase the brand of Brookline Dental Team"
                 "Here is your welcome message = {}".format(config['welcome_message'])
             )
@@ -45,19 +45,21 @@ def rag(client, query, groq_api_key, current_service, chat_history):
     user_message = {
         "role": "user",
         "content": f""" 
-                    My_Question: {answers[2]}\n
+                    Question: {answers[2]}\n
                     Context: {Context}. \n
                     Dental_Service: {dental_service}
 
                     Follow the steps given below:
-                        1. Analyze My_Question and Context given above.
-                        2. Provide a response only to answer My_Question using the Context mainly.
-                        3. Do not provide any additional information than requrired for the My_Question.
-                        4. Output your short response in the structured format with appropriate line breaks and bolds only when needed.
+                        1. Using the Context provide a response only to answer the Question mainly, be concise and to the point.
+                        Note: Do not provide any additional information than requrired for the Question.
+                        2. Do not provide any additional information than requrired for the Question.
+                        3. Output your response in the structured format with appropriate line breaks and bolds only when needed.
+                        4. If the asnwer to the Question is not the Context and is regarding the dental clinic:
+                           Then provide a tattical response to keep the conversation going and ask the user to contact the website for more information.
 
                     Note: Provide very detailed long answers for questions only on treatment plan and after care for the dental services
-                    Provide only the output by following above steps with no additional text.
-                    Do not provide topics in the response, but structure your response.
+                    Provide the output by making sure you follow above steps with no additional text.
+                    Do not provide topics in the response, but structure your response with appropriate line breaks and bolds only when needed.
                     """
     }
     messages.append(user_message)
