@@ -3,6 +3,7 @@ from docx import Document
 import sys
 import pandas as pd
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+import PyPDF2
 
 def convert_docs_to_markdown(folder_path):
     # Initialize a string to hold the combined Markdown content
@@ -190,7 +191,6 @@ def extract_pdf_content_with_pypdf(pdf_file_path, paragraph_separator="new parag
         list: List of text chunks split by paragraphs
     """
     try:
-        import PyPDF2
     except ImportError:
         print("PyPDF2 not found. Please install it using: pip install PyPDF2")
         return []

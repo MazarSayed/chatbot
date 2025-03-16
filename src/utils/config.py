@@ -5,7 +5,7 @@ import os
 import logging
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
-from src.utils.docx_to_txt import extract_pdf_content_with_fitz, extract_pdf_content_with_pypdf, extract_pdf_content_with_pdfminer
+from src.utils.docx_to_txt import extract_pdf_content_with_pypdf
 
 class EmbeddingModel:
     _instance = None
