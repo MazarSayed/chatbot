@@ -3,24 +3,31 @@ try:
     sqlite_fix.fix_sqlite()
 except Exception as e:
     print(f"Warning: Could not apply SQLite fix: {e}")
-    
+
+# Regular imports
 import os
 from dotenv import load_dotenv
 from src.utils.config import load_config
 import streamlit as st
+from langchain_groq import ChatGroq
 import sqlite3
-from src.rag import rag,stream_response
+import sys
+from streamlit import logger
+from src.rag import rag, stream_response
+import time
 from src.utils.config import EmbeddingModel
 from src.nodes.functions import business_info
 from datetime import datetime
 from groq import Groq
-import sqlite3
+
 # Log SQLite version for debugging
 print(f"SQLite version: {sqlite3.sqlite_version}")
 
 # Load configuration and environment variables
 from src.database.chroma_manager import ChromaManager
 from src.utils.config import populate_chroma_db_doc
+
+
 config,prompt = load_config()
 load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
