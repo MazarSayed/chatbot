@@ -5,10 +5,11 @@ langchain-groq
 streamlit
 langchain_community
 groq
-chromadb
+chromadb>=0.4.18
 streamlit_autorefresh
 python-docx
 fitz
 frontend
 pymupdf4llm
 sentence_transformers
+pysqlite3-binary

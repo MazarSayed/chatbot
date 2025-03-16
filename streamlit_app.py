@@ -3,10 +3,8 @@ from dotenv import load_dotenv
 from src.utils.config import load_config
 import streamlit as st
 from langchain_groq import ChatGroq
-from src.database.chroma_manager import ChromaManager
-from src.utils.config import populate_chroma_db,populate_chroma_db_doc
-from groq import Groq
 import sqlite3
+import sys
 from streamlit import logger
 from src.rag import rag,stream_response
 import time
@@ -16,16 +14,12 @@ from src.utils.config import EmbeddingModel
 from streamlit_autorefresh import st_autorefresh
 from src.nodes.functions import business_info
 from datetime import datetime
+from groq import Groq
 
-#__import__('pysqlite3')
-#import sys
+# Log SQLite version for debugging
+print(f"SQLite version: {sqlite3.sqlite_version}")
 
-#sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-
-#app_logger = logger.get_logger("LOOP APP")
-#app_logger.info(f"sqlite version: {sqlite3.sqlite_version}")
-#app_logger.info(f"sys_version:{sys.version}")
-
+# Load configuration and environment variables
 config,prompt = load_config()
 load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
