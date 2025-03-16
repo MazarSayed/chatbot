@@ -10,6 +10,6 @@ streamlit_autorefresh
 python-docx
 fitz
 frontend
-pymupdf4llm
 sentence_transformers
 pysqlite3-binary
+PyPDF2

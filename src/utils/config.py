@@ -5,7 +5,7 @@ import os
 import logging
 from pathlib import Path
 from sentence_transformers import SentenceTransformer
-from src.utils.docx_to_txt import convert_docs_to_markdown, read_folder_to_text_df
+from src.utils.docx_to_txt import extract_pdf_content_with_fitz, extract_pdf_content_with_pypdf, extract_pdf_content_with_pdfminer
 
 class EmbeddingModel:
     _instance = None
@@ -99,7 +99,7 @@ def populate_chroma_db_doc(chroma_manager):
         return  # Exit the function if the directory is not found
 
     print("dir_path", pdf_dir_path)
-    paragraphs = read_folder_to_text_df(pdf_dir_path)
+    paragraphs = extract_pdf_content_with_fitz(pdf_dir_path,"new paragraph")
     #content = convert_docs_to_markdown(os.path.join(dir_path,"..","..","data/"))
     # Clean the extracted string
     #cleaned_text = [text for text in extracted_string if text.strip() and text != '\xa0']
