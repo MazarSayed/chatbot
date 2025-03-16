@@ -1,17 +1,16 @@
+try:
+    import sqlite_fix
+    sqlite_fix.fix_sqlite()
+except Exception as e:
+    print(f"Warning: Could not apply SQLite fix: {e}")
+    
 import os
 from dotenv import load_dotenv
 from src.utils.config import load_config
 import streamlit as st
-from langchain_groq import ChatGroq
 import sqlite3
-import sys
-from streamlit import logger
 from src.rag import rag,stream_response
-import time
-import threading
-import time
 from src.utils.config import EmbeddingModel
-from streamlit_autorefresh import st_autorefresh
 from src.nodes.functions import business_info
 from datetime import datetime
 from groq import Groq
