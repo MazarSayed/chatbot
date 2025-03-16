@@ -91,8 +91,15 @@ def load_doc():
 def populate_chroma_db_doc(chroma_manager):
     print("Populating Chroma DB with doc's...")
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    print("dir_path",os.path.join(dir_path,"..","..","data/pdf/"))
-    paragraphs = read_folder_to_text_df(os.path.join(dir_path,"..","..","data/pdf/"))
+    pdf_dir_path = os.path.join(dir_path, "..", "..", "data", "pdf")
+    
+    # Check if the directory exists before attempting to read
+    if not os.path.exists(pdf_dir_path):
+        print(f"Error: The directory {pdf_dir_path} does not exist.")
+        return  # Exit the function if the directory is not found
+
+    print("dir_path", pdf_dir_path)
+    paragraphs = read_folder_to_text_df(pdf_dir_path)
     #content = convert_docs_to_markdown(os.path.join(dir_path,"..","..","data/"))
     # Clean the extracted string
     #cleaned_text = [text for text in extracted_string if text.strip() and text != '\xa0']
