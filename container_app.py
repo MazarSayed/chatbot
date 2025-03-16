@@ -47,29 +47,22 @@ st.set_page_config(
     }
 )
 
-# Only import ChromaDB related modules and initialize if not already done
-try:
-        # Import here to ensure SQLite fix is applied first
-        from src.database.chroma_manager import ChromaManager
-        from src.utils.config import populate_chroma_db_doc
+from src.database.chroma_manager import ChromaManager
+from src.utils.config import populate_chroma_db_doc
         
         # Check SQLite version compatibility
-        import sqlite3
-        sqlite_version = tuple(map(int, sqlite3.sqlite_version.split('.')))
-        if sqlite_version < (3, 35, 0):
-            st.error(f"ChromaDB requires SQLite version >= 3.35.0, but you have {sqlite3.sqlite_version}. " 
+import sqlite3
+sqlite_version = tuple(map(int, sqlite3.sqlite_version.split('.')))
+if sqlite_version < (3, 35, 0):
+    st.error(f"ChromaDB requires SQLite version >= 3.35.0, but you have {sqlite3.sqlite_version}. " 
                      "Please see container setup instructions.")
-            print(f"SQLite version incompatible: {sqlite3.sqlite_version}")
-        else:
+    print(f"SQLite version incompatible: {sqlite3.sqlite_version}")
+else:
             # Initialize ChromaDB
-            chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
-            populate_chroma_db_doc(chroma_manager)
-            st.session_state["chroma_initialized"] = True
-            st.session_state["chroma_manager"] = chroma_manager
-            print("ChromaDB initialized successfully.")
-except Exception as e:
-        st.error(f"Error initializing ChromaDB: {str(e)}")
-        print(f"ChromaDB initialization error: {str(e)}")
+    chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
+    st.session_state["chroma_manager"] = chroma_manager
+    print("ChromaDB initialized successfully.")
+
 
 
 def clear_submit():
