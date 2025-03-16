@@ -60,6 +60,7 @@ if sqlite_version < (3, 35, 0):
 else:
             # Initialize ChromaDB
     chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
+    populate_chroma_db_doc(chroma_manager)
     st.session_state["chroma_manager"] = chroma_manager
     print("ChromaDB initialized successfully.")
 
