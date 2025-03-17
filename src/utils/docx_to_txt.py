@@ -179,47 +179,69 @@ def extract_pdf_content_with_fitz(pdf_file_path, paragraph_separator="new paragr
 def extract_pdf_content_with_pypdf(pdf_file_path, paragraph_separator="new paragraph"):
     """
     Extract content from a PDF file and split it by paragraph using PyPDF2
-    without relying on pymupdf4llm or fitz.
-    
-    Note: Requires PyPDF2 to be installed: pip install PyPDF2
     
     Args:
         pdf_file_path (str): Path to the PDF file
-        paragraph_separator (str): Text to use when detecting paragraph breaks (default: "new paragraph")
+        paragraph_separator (str): Text to use when detecting paragraph breaks
         
     Returns:
         list: List of text chunks split by paragraphs
     """
-        # Open the PDF file with PyPDF2
-    full_text = ""
+    try:
+        # Normalize the path
+        pdf_file_path = os.path.abspath(pdf_file_path)
         
-    with open(pdf_file_path, 'rb') as file:
-            pdf_reader = PyPDF2.PdfReader(file)
+        if not os.path.exists(pdf_file_path):
+            print(f"Error: File or directory not found - {pdf_file_path}")
+            return []
             
-            # Extract text from each page
-            for page_num in range(len(pdf_reader.pages)):
-                page = pdf_reader.pages[page_num]
-                page_text = page.extract_text()
-                
-                if page_text:
-                    # Replace multiple newlines with paragraph separator
-                    page_text = page_text.replace('\n\n', f' {paragraph_separator} ')
-                    page_text = page_text.replace('\n', ' ')  # Replace single newlines with spaces
-                    
-                    # Add to full text
-                    full_text += page_text + " "
+        if os.path.isdir(pdf_file_path):
+            print(f"Error: Path is a directory, not a file - {pdf_file_path}")
+            return []
+            
+        if not pdf_file_path.endswith(".pdf"):
+            print(f"Error: File is not a PDF - {pdf_file_path}")
+            return []
+
+        # Open the PDF file with PyPDF2
+        full_text = ""
         
+        try:
+            with open(pdf_file_path, 'rb') as file:
+                pdf_reader = PyPDF2.PdfReader(file)
+                
+                # Extract text from each page
+                for page_num in range(len(pdf_reader.pages)):
+                    page = pdf_reader.pages[page_num]
+                    page_text = page.extract_text()
+                    
+                    if page_text:
+                        # Replace multiple newlines with paragraph separator
+                        page_text = page_text.replace('\n\n', f' {paragraph_separator} ')
+                        page_text = page_text.replace('\n', ' ')  # Replace single newlines with spaces
+                        
+                        # Add to full text
+                        full_text += page_text + " "
+        except PermissionError as pe:
+            print(f"Permission denied accessing file: {pdf_file_path}")
+            print("Please ensure the file is not open in another program")
+            return []
+            
         # Split the text by the paragraph separator
-    split_texts = full_text.split(paragraph_separator)
+        split_texts = full_text.split(paragraph_separator)
         
         # Clean and filter the text chunks
-    cleaned_texts = []
-    for text in split_texts:
+        cleaned_texts = []
+        for text in split_texts:
             # Clean up whitespace and normalize text
             cleaned = " ".join(text.split())
             if cleaned:
                 cleaned_texts.append(cleaned)
         
-    print(f"Extracted {len(cleaned_texts)} chunks from {os.path.basename(pdf_file_path)}")
-    return cleaned_texts
+        print(f"Successfully extracted {len(cleaned_texts)} chunks from {os.path.basename(pdf_file_path)}")
+        return cleaned_texts
+        
+    except Exception as e:
+        print(f"Error processing {pdf_file_path}: {str(e)}")
+        return []
     
