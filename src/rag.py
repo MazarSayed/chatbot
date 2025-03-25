@@ -52,12 +52,13 @@ def rag(client, query, groq_api_key, current_service, chat_history):
 
                     Follow the steps given below:\n
                         1. Using the Context provide a response only to answer the Question in 2-3 sentences\n
-                        2. Output your response in the structured format with appropriate line breaks and bolds only when needed like a virtual dental concierge.\n
+                        2. Structure your response as sentences and paragraphs with appropriate line breaks and bolds only when needed like a virtual dental concierge.\n
                         3. If the answer to the Question is not in the Context:\n
                            Then provide a tactical response to keep the conversation going and ask the user to contact the front office by filling out the appointment form for more information.\n\n
 
                     Provide the output by making sure you follow above steps with no additional text.\n
-                    Do not provide topics in the response, but structure your response with appropriate line breaks and bolds only when needed like a virtual dental concierge.\n
+                    Structure your response as sentences and paragraphs with appropriate line breaks and bolds only when needed like a virtual dental concierge.\n
+                    Note: Do not provide bold topics in the response.
                     Note: Provide very detailed 6-7 sentence answers for questions only based on treatment plan/procedure and after care of the dental services.\n
                     """
     }
@@ -114,7 +115,7 @@ def rag(client, query, groq_api_key, current_service, chat_history):
     return response,dental_service
 
 
-def stream_response(response_text, delay):
+def stream_response(response_text, delay=0):
     """
     Generator that processes each chunk from the API response.
     It extracts the token, appends it to a cumulative string,

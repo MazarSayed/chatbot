@@ -1,16 +1,3 @@
-"""
-Container-specific version of the Streamlit app.
-This version includes special handling for SQLite compatibility in container environments.
-"""
-
-# Try to apply SQLite fix before any other imports
-try:
-    import sqlite_fix
-    sqlite_fix.fix_sqlite()
-except Exception as e:
-    print(f"Warning: Could not apply SQLite fix: {e}")
-
-# Regular imports
 import os
 from dotenv import load_dotenv
 from src.utils.config import load_config
@@ -25,9 +12,12 @@ from src.utils.config import EmbeddingModel
 from src.nodes.functions import business_info
 from datetime import datetime
 from groq import Groq
+from src.database.chroma_manager import ChromaManager
+from src.utils.config import populate_chroma_db_doc
 
-# Log SQLite version for debugging
-print(f"SQLite version: {sqlite3.sqlite_version}")
+
+
+
 
 # Load configuration and environment variables
 config, prompt = load_config()
@@ -47,22 +37,11 @@ st.set_page_config(
     }
 )
 
-from src.database.chroma_manager import ChromaManager
-from src.utils.config import populate_chroma_db_doc
-        
-        # Check SQLite version compatibility
-import sqlite3
-sqlite_version = tuple(map(int, sqlite3.sqlite_version.split('.')))
-if sqlite_version < (3, 35, 0):
-    st.error(f"ChromaDB requires SQLite version >= 3.35.0, but you have {sqlite3.sqlite_version}. " 
-                     "Please see container setup instructions.")
-    print(f"SQLite version incompatible: {sqlite3.sqlite_version}")
-else:
-            # Initialize ChromaDB
-    chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
-    populate_chroma_db_doc(chroma_manager)
-    st.session_state["chroma_manager"] = chroma_manager
-    print("ChromaDB initialized successfully.")
+
+chroma_manager = ChromaManager(config)
+#populate_chroma_db_doc(chroma_manager)
+st.session_state["chroma_manager"] = chroma_manager
+print("ChromaDB initialized successfully.")
 
 
 
@@ -100,7 +79,6 @@ else:
         st.chat_message("user").write(query)
 
         with st.chat_message("assistant"):
-            query_embedding = model.get_embedding(query)
             response_text, dental_service = rag(client, query, groq_api_key, current_service, st.session_state["messages"])
             
             if isinstance(response_text, dict):

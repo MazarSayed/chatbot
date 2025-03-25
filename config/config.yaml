@@ -4,6 +4,10 @@ owner: CelestialBI Dentals
 services: ['invisalign','teeth cleaning','dental checkup','emergency dental care','dental implants','laser treatment','sealants','flouride treatment']
 chroma_path: ./chroma_db
 time_out : 10
+qdrant_path: ./qdrant_db
+qdrant_url: https://d0c95e4d-1467-474c-9bae-430b82a39b19.us-east-1-0.aws.cloud.qdrant.io
+qdrant_write_key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIiwiZXhwIjoxNzUxMDA5MDcwfQ.BJnltL8pTeBpun1WZltx44smLAsCtGZCV8Xbiptp5Dw
+qdrant_read_key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIiwiZXhwIjoxNzUxMDA5MTUzfQ.DHo5qsTJwAHOCQr2Xq65qBPAunyQzihkiV1ztiD6tZs
 
 inactivity_timeout : 60,  # Threshold for user inactivity (seconds)
 refresh_interval : 5 

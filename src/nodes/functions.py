@@ -6,12 +6,12 @@ from src.utils.config import EmbeddingModel
 
 def business_info(dental_service: str,question_describtion:str,previous_dental_service:str)->str:
     config,prompt = load_config()
-    chroma_manager = ChromaManager(os.path.abspath(config['chroma_path']))
+    chroma_manager = ChromaManager(config)
     model = EmbeddingModel.get_instance()
     previous_dental_service = previous_dental_service.lower()
-    service_question = question_describtion+"-"+previous_dental_service
-    print(f"\n{'='*50}\n service_question: {service_question}\n{'='*50}")
-    query_embedding = model.get_embedding(service_question)
+    #service_question = question_describtion+"-"+previous_dental_service
+    print(f"\n{'='*50}\n question_describtion: {question_describtion}\n{'='*50}")
+    query_embedding = model.get_embedding(question_describtion)
     dental_service = dental_service.lower()
     
     #current_service = None
@@ -33,9 +33,9 @@ def business_info(dental_service: str,question_describtion:str,previous_dental_s
     #        Would you like to schedule a consultation?"""]]
     #    questions = [[f"Services not in the list of {dental_service}"]]
 #    buttons = [[{}]]  # Empty buttons for services not in the list
-    return [answers,current_service,service_question]
+    return [answers,current_service,question_describtion]
 
-def book_appointment()->str:
+def book_appointment() -> str:
     print("Booking appointment...")
     appointment_widget = {
         "status": "success",
@@ -46,37 +46,91 @@ def book_appointment()->str:
                 "description": "Fill out the form below to book your appointment.",
                 "fields": [
                     {
-                        "label": "Name",
+                        "label": "First Name",
                         "type": "text",
-                        "placeholder": "Enter your name",
-                        "required": True
+                        "placeholder": "Enter your first name",
+                        "required": True,
+                        "key": "name"
+                    },
+                    {
+                        "label": "Last Name",
+                        "type": "text",
+                        "placeholder": "Enter your last name",
+                        "required": True,
+                        "key": "last_name"
                     },
                     {
                         "label": "Email",
                         "type": "email",
                         "placeholder": "Enter your email",
-                        "required": True
+                        "required": True,
+                        "key": "email"
                     },
                     {
                         "label": "Phone Number",
                         "type": "tel",
                         "placeholder": "Enter your phone number",
-                        "required": True
+                        "required": True,
+                        "key": "phone"
                     },
                     {
-                        "label": "Preferred Date",
-                        "type": "date",
-                        "required": True
+                        "label": "Patient Type",
+                        "type": "radio",
+                        "options": [
+                            {"label": "New Patient", "value": "new"},
+                            {"label": "Existing Patient", "value": "existing"}
+                        ],
+                        "required": True,
+                        "key": "patient_type"
+                    },
+                    {
+                        "label": "Preferred Days",
+                        "type": "select",
+                        "multiple": True,
+                        "options": [
+                            {"label": "Monday", "value": "monday"},
+                            {"label": "Tuesday", "value": "tuesday"},
+                            {"label": "Wednesday", "value": "wednesday"},
+                            {"label": "Thursday", "value": "thursday"},
+                            {"label": "Friday", "value": "friday"},
+                            {"label": "Saturday", "value": "saturday"},
+                            {"label": "Sunday", "value": "sunday"}
+                        ],
+                        "required": True,
+                        "key": "preferred_days"
                     },
                     {
                         "label": "Preferred Time",
-                        "type": "time",
-                        "required": True
+                        "type": "select",
+                        "options": [
+                            {"label": "AM", "value": "am"},
+                            {"label": "PM", "value": "pm"}
+                        ],
+                        "required": True,
+                        "key": "preferred_time"
+                    },
+                    {
+                        "label": "Interested Services",
+                        "type": "select",
+                        "multiple": True,
+                        "options": [
+                            {"label": "Invisalign", "value": "invisalign"},
+                            {"label": "Teeth Cleaning", "value": "teeth_cleaning"},
+                            {"label": "Dental Checkup", "value": "dental_checkup"},
+                            {"label": "Emergency Dental Care", "value": "emergency_dental_care"},
+                            {"label": "Dental Implants", "value": "dental_implants"},
+                            {"label": "Laser Treatment", "value": "laser_treatment"},
+                            {"label": "Sealants", "value": "sealants"},
+                            {"label": "Fluoride Treatment", "value": "fluoride_treatment"}
+                        ],
+                        "required": True,
+                        "key": "interested_services"
                     },
                     {
                         "label": "Additional Notes",
                         "type": "textarea",
-                        "placeholder": "Any additional information or requests"
+                        "placeholder": "Any additional information or requests",
+                        "key": "notes"
                     }
                 ],
                 "button": {
