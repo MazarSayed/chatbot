@@ -1,15 +1,20 @@
-python-dotenv
-langchain_core
-langchain
-langchain-groq
-streamlit
-langchain_community
-groq
-chromadb>=0.4.18
-streamlit_autorefresh
-python-docx
-fitz
-frontend
-sentence_transformers
-pysqlite3-binary
-PyPDF2
+python-dotenv==1.0.1
+langchain_core==0.3.33
+langchain==0.3.17
+langchain-groq==0.2.4
+streamlit==1.42.0
+langchain_community==0.3.16
+groq==0.18.0
+SQLAlchemy==2.0.37
+chromadb==0.6.3
+streamlit_autorefresh== 1.0.1
+python-docx==1.1.2
+fitz ==0.0.1.dev2
+frontend ==0.0.3
+sentence_transformers==3.4.1
+PyPDF2 ==3.0.1
+qdrant_client == 1.13.3
+streamlit ==1.43.2
+websockets==11.0.3
+pyyaml==6.0.1
+typing-extensions==4.8.0
