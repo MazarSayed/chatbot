@@ -18,3 +18,4 @@ streamlit
 websockets
 pyyaml==6.0.1
 google-genai==1.9.0
+google-generativeai
