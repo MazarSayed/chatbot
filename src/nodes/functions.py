@@ -4,14 +4,14 @@ from typing_extensions import Annotated
 import os
 from src.utils.config import EmbeddingModel
 
-def business_info(dental_service: str,question_describtion:str,previous_dental_service:str)->str:
+def business_info(dental_service: str,question_description:str,previous_dental_service:str)->str:
     config,prompt = load_config()
     chroma_manager = ChromaManager(config)
     model = EmbeddingModel.get_instance()
     previous_dental_service = previous_dental_service.lower()
-    #service_question = question_describtion+"-"+previous_dental_service
-    print(f"\n{'='*50}\n question_describtion: {question_describtion}\n{'='*50}")
-    query_embedding = model.get_embedding(question_describtion)
+    #service_question = question_description+"-"+previous_dental_service
+    print(f"\n{'='*50}\n question_description: {question_description}\n{'='*50}")
+    query_embedding = model.get_embedding(question_description)
     dental_service = dental_service.lower()
     
     #current_service = None
@@ -21,9 +21,9 @@ def business_info(dental_service: str,question_describtion:str,previous_dental_s
             current_service = dental_service
         else:
             current_service = ''
-        answers = chroma_manager.get_doc(query_embedding,dental_service,2)
+        answers = chroma_manager.get_doc(query_embedding,dental_service,3)
     elif dental_service == 'none':
-        answers = chroma_manager.get_doc(query_embedding,dental_service,2)
+        answers = chroma_manager.get_doc(query_embedding,dental_service,3)
         current_service = ''
     #else:
     #    current_service = ''
@@ -33,10 +33,10 @@ def business_info(dental_service: str,question_describtion:str,previous_dental_s
     #        Would you like to schedule a consultation?"""]]
     #    questions = [[f"Services not in the list of {dental_service}"]]
 #    buttons = [[{}]]  # Empty buttons for services not in the list
-    return [answers,current_service,question_describtion]
+    return [answers,current_service,question_description]
 
-def book_appointment() -> str:
-    print("Booking appointment...")
+def book_appointment(user_message: str) -> dict:
+    print(f"Booking appointment with context: {user_message}")
     appointment_widget = {
         "status": "success",
         "data": {
@@ -156,5 +156,4 @@ def book_appointment() -> str:
             "message": "Appointment widget component created successfully."
         }
     }
-    dental_service = 'none'
-    return dict(appointment_widget)
+    return appointment_widget

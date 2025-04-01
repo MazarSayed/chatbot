@@ -14,7 +14,8 @@ from datetime import datetime
 from groq import Groq
 from src.database.chroma_manager import ChromaManager
 from src.utils.config import populate_chroma_db_doc
-
+from google import genai
+import google.genai as genai
 
 
 
@@ -22,8 +23,9 @@ from src.utils.config import populate_chroma_db_doc
 # Load configuration and environment variables
 config, prompt = load_config()
 load_dotenv()
-groq_api_key = os.getenv("GROQ_API_KEY")
-client = Groq(api_key=groq_api_key)
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+
+client = genai.Client(api_key=gemini_api_key)
 
 # Function to initialize the system
 st.set_page_config(
@@ -55,7 +57,7 @@ response_text = ""
 model = EmbeddingModel.get_instance()
 current_service = 'None'
 
-if not groq_api_key:
+if not gemini_api_key:
     st.info("Please add your Groq API key to continue.", icon="🗝️")
 else:
     clear_history = st.sidebar.button("Clear conversation history")
@@ -79,7 +81,7 @@ else:
         st.chat_message("user").write(query)
 
         with st.chat_message("assistant"):
-            response_text, dental_service = rag(client, query, groq_api_key, current_service, st.session_state["messages"])
+            response_text, dental_service = rag(client,config, query, gemini_api_key, current_service, st.session_state["messages"])
             
             if isinstance(response_text, dict):
                 # Handle appointment form
@@ -153,7 +155,7 @@ else:
                 # Handle streaming text response
                 full_response = ""
                 try:
-                    full_response = st.write_stream(stream_response(response_text, 0.0075))
+                    full_response = st.write_stream(stream_response(response_text, 0.0001))
                 except Exception as e:
                     st.error(f"Error displaying response: {str(e)}")
                     
