@@ -155,7 +155,7 @@ else:
                 # Handle streaming text response
                 full_response = ""
                 try:
-                    full_response = st.write_stream(stream_response(response_text, 0.0001))
+                    full_response = st.write_stream(stream_response(response_text, 0.005))
                 except Exception as e:
                     st.error(f"Error displaying response: {str(e)}")
                     
