@@ -25,78 +25,20 @@ PROMPT = """You are a helpful virtual dental concierge for a Dental Care Website
         - Make sure to analzye the chat_history and the input user_query before generating question_description 
         - Make sure you remember the last service user talked about, and use it to generate the right question_description """.format(services=config["services"])
 
-# Configure the client
-
-def test_function_calling():
-    print(f"{Fore.GREEN}Testing Function Calling...{Style.RESET_ALL}")
-    
-    api_key = os.getenv('GOOGLE_API_KEY')
-    client = genai
-    client.configure(api_key=api_key)
-    
-    # Get the function declarations
-    tools = tools_calling(config["services"], "I need dental services", [], "None")
-    
-    # Define the prompt with proper formatting
-    prompt = {
-        "role": "user", 
-        "parts": [{
-            "text": "I need to find information about dental cleaning services and I'd like to book an appointment for tomorrow at 2pm."
-        }]
-    }
-    
-    try:
-        generation_config = GenerateContentConfig(
-            system_instruction=PROMPT,
-            tools=tools
-        )   
-        # Make the API call using the tools
-        response = client.models.generate_content(
-            model='gemini-2.0-flash',
-            contents=[prompt],
-            generation_config=generation_config
-        )
-        
-        # Display the response
-        print(f"{Fore.BLUE}Response:{Style.RESET_ALL}")
-        if hasattr(response, 'text'):
-            print(response.text)
-        else:
-            print("Response has no text attribute")
-        
-        # Check for function calls in the response
-        if hasattr(response, 'function_calls') and response.function_calls:
-            print(f"{Fore.GREEN}Function Call Detected:{Style.RESET_ALL}")
-            for function_call in response.function_calls:
-                print(f"Function Name: {function_call.name}")
-                print(f"Arguments: {function_call.args}")
-                print("-" * 50)
-                                
-        print(f"{Fore.GREEN}Function calling test completed.{Style.RESET_ALL}")
-    
-    except Exception as e:
-        print(f"{Fore.RED}Error testing function calling: {str(e)}{Style.RESET_ALL}")
 
 def chat_with_llama(client, config, query, current_service, recent_history):
     """Process user query using Gemini API's function calling"""
     
     print(f"\n{'='*50}\n current_service in action: {current_service}\n{'='*50}")
     
-    # Format the chat history in a way Gemini can understand
-    chat_history_text = ""
-    for msg in recent_history:
-        role = msg["role"]
-        content = msg["content"]
-        chat_history_text += f"{role}: {content}\n\n"
-    
-    # Prepare the prompt for Gemini using the Content format
-    prompt = {
+    # Get the function declarations
+    tools = tools_calling(config["services"], query, recent_history, current_service)
+
+    # Create a new prompt message
+    new_prompt = {
         "role": "user", 
         "parts": [{
             "text": f"""
-                Previous conversation:
-                {chat_history_text}
-
                 User query: {query}
 
                 Based on this conversation and query, provide relevant information about dental services.
@@ -104,10 +46,12 @@ def chat_with_llama(client, config, query, current_service, recent_history):
             """
         }]
     }
-
-    # Get the function declarations
-    tools = tools_calling(config["services"], query, recent_history, current_service)
-  
+    
+    # Create a copy of recent_history to avoid modifying the original
+    formatted_messages = recent_history.copy()
+    # Add the new prompt
+    formatted_messages.append(new_prompt)
+    
     # Call Gemini with function declarations using the correct structure
     try:
         # Configure with the proper format according to Gemini API
@@ -118,7 +62,7 @@ def chat_with_llama(client, config, query, current_service, recent_history):
         # Make the API call using the tools
         response = client.models.generate_content(
             model='gemini-2.0-flash',
-            contents=[prompt],
+            contents=formatted_messages,
             config=generation_config
         )
         # Process function calls if any
@@ -144,14 +88,14 @@ def chat_with_llama(client, config, query, current_service, recent_history):
                     previous_dental_service=previous_service
                 )
             elif function_name == "book_appointment":
-                context = args.get("context", "Appointment booking")
-                return book_appointment(context=context)
+                user_message = args.get("user_message", "Appointment booking request")
+                return book_appointment(user_message=user_message)
         
         # If the model returned a regular text response or no function calls were detected
         if hasattr(response, 'text') and response.text:
             response_text = response.text.lower()
             if any(term in response_text for term in ["appointment", "schedule", "book", "meet", "visit"]):
-                return book_appointment(context=response_text)
+                return book_appointment(user_message=response_text)
             service = current_service if current_service != "None" else ""
             return business_info(
                 dental_service=service,
@@ -164,6 +108,3 @@ def chat_with_llama(client, config, query, current_service, recent_history):
     except Exception as e:
         print(f"Error calling Gemini API: {str(e)}")
         return [["I'm having trouble processing your request."], "None", query]
-
-if __name__ == "__main__":
-    test_function_calling()

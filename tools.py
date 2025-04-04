@@ -33,12 +33,12 @@ def tools_calling(services, query, history, current_service):
     book_appointment_schema = {
         "type": "OBJECT",
         "properties": {
-            "user_message": {
+            "user_question": {
                 "type": "STRING",
-                "description": "user_message for booking the appointment"
+                "description": "user_question for booking the appointment"
             }
         },
-        "required": ["user_message"]
+        "required": ["user_question"]
     }
 
     # Create function declarations
@@ -53,7 +53,7 @@ def tools_calling(services, query, history, current_service):
 
     book_appointment_func = {
         "name": "book_appointment",
-        "description": "Call this function to Book an appointment or consultation with the Brookline Dental Team",
+        "description": "Call this function if the user requests to Book an appointment or consultation with the Brookline Dental Team",
         "parameters": book_appointment_schema
     }
 

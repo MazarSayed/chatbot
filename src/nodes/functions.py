@@ -35,8 +35,8 @@ def business_info(dental_service: str,question_description:str,previous_dental_s
 #    buttons = [[{}]]  # Empty buttons for services not in the list
     return [answers,current_service,question_description]
 
-def book_appointment(user_message: str) -> dict:
-    print(f"Booking appointment with context: {user_message}")
+def book_appointment(user_question: str) -> dict:
+    print(f"Booking appointment with message: {user_question}")
     appointment_widget = {
         "status": "success",
         "data": {

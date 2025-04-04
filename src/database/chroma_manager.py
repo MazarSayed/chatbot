@@ -248,7 +248,7 @@ class ChromaManager:
         Returns:
             List of answers
         """
-        collection_name = "Luna_QA"
+        collection_name = "QA"
         collection = self.get_or_create_collection(collection_name)
         
         # Update vector dimension if not set
@@ -303,7 +303,7 @@ class ChromaManager:
         Returns:
             List of answers
         """
-        collection_name = "Luna_QA"
+        collection_name = "QA"
         collection = self.get_or_create_collection(collection_name)
         
         # Update vector dimension if not set
@@ -368,7 +368,7 @@ class ChromaManager:
         Returns:
             List of document texts
         """
-        collection_name = "Luna_QA"
+        collection_name = "QA"
         collection = self.get_or_create_collection(collection_name)
         
         # Update vector dimension if not set
@@ -382,7 +382,8 @@ class ChromaManager:
                     collection_name=collection_name,
                     vectors_config=VectorParams(
                         size=self.vector_dim,
-                        distance=Distance.COSINE
+                        distance=Distance.COSINE,
+                        mmr=True  # Enable MMR (Maximal Marginal Relevance)
                     )
                 )
         
@@ -393,11 +394,11 @@ class ChromaManager:
                 # Convert embedding to list for Qdrant
                 query_vector = embedding.tolist()
                 
-                # Search using the embedding
+                # Search using the embedding with similarity score limit
                 search_result = self.client.search(
                     collection_name=collection_name,
                     query_vector=query_vector,
-                    limit=n_results
+                    limit=n_results,
                 )
                 
                 # Extract documents from results
@@ -479,7 +480,7 @@ class ChromaManager:
         # Store buttons as a JSON string
         buttons_json = json.dumps(buttons) if buttons else '{}'
         
-        collection_name = "Luna_QA"
+        collection_name = "QA"
         collection = self.get_or_create_collection(collection_name)
         
         # Create collection with proper dimensions if it doesn't exist
@@ -530,7 +531,7 @@ class ChromaManager:
             answers: List of answers
             buttons_list: Optional list of button dictionaries
         """
-        collection_name = "Luna_QA"
+        collection_name = "QA"
         collection = self.get_or_create_collection(collection_name)
         
         # Update vector dimension if not set
@@ -599,7 +600,7 @@ class ChromaManager:
             embeddings: List of document embeddings
             documents: List of document texts
         """
-        collection_name = "Luna_QA"
+        collection_name = "QA"
         
         print(f"Starting batch_add_documents with {len(documents)} documents")
         

@@ -66,18 +66,19 @@ else:
         # Get initial greeting
         response_text = """Hello! Welcome to Brookline Progressive Dental Team.\n I'm Luna, your dedicated smile concierge, here to help you find the perfect dental care just for you.\n We are a multi-specialty practice, serving the Greater Boston area for over 20 years and bringing confident smiles to thousands of families.\n Our team consists of American Board-Certified experts dedicated to providing top-tier dental care for both adults and children.\n To better assist you today, would you please first tell me what brings you here today?"""
 
-        st.session_state["messages"] = [{"role": "assistant", "content": response_text}]
+        st.session_state["messages"] = [{"role": "model", "parts": [{"text": response_text}]}]
         st.session_state["chat_history"] = []
         
     # Display chat messages
-    for msg in st.session_state["messages"]:
-        content = msg["content"]
-        st.chat_message(msg["role"]).write(content)
-        print(f"\n{'='*50}\nAnswer: {content}\n{'='*50}")
+    if "messages" in st.session_state:
+        for msg in st.session_state["messages"]:
+            content = msg["parts"][0]["text"]
+            st.chat_message(msg["role"]).write(content)
+            print(f"\n{'='*50}\nAnswer: {content}\n{'='*50}")
 
     # Handle user input
     if query := st.chat_input(placeholder="How can I help you?"):
-        st.session_state["messages"].append({"role": "user", "content": query})
+        st.session_state["messages"].append({"role": "user", "parts": [{"text": query}]})
         st.chat_message("user").write(query)
 
         with st.chat_message("assistant"):
@@ -162,4 +163,4 @@ else:
                 if dental_service in config['services']:
                     current_service = dental_service    
                 print("current_service:", current_service)   
-                st.session_state["messages"].append({"role": "assistant", "content": full_response}) 
+                st.session_state["messages"].append({"role": "model", "parts": [{"text":full_response}]}) 

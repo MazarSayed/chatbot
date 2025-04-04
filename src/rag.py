@@ -9,8 +9,8 @@ from google.genai.types import GenerateContentConfig
 def rag(client, config, query, groq_api_key, current_service, chat_history):
     """RAG pipeline for handling queries and generating responses"""
     # Limit chat history to recent messages
-    if len(chat_history) > 7:
-        recent_history = chat_history[-7:]
+    if len(chat_history) > 5:
+        recent_history = chat_history[-5:]
     else:
         recent_history = chat_history[:]
 
@@ -35,35 +35,44 @@ def rag(client, config, query, groq_api_key, current_service, chat_history):
     system_instruction = """
                 You are a helpful virtual dental concierge for a Dental Care Website specifically owned by Brookline Progressive Dental Team. 
                 Your name is Luna, you are very patient, friendly and polite. 
-                Your users will ask questions about our Dental Services and Dental Care in general. 
-                Provide answers in a structured format with appropriate line breaks and bolds only when needed like dental concierge assistant
+                You will be given user questions related to our Dental Services, Doctors profiles and Dental Care in general.
+                Provide answers in a structured format with appropriate line breaks and bolds.
+                Provides max 2-3 sentences for all questionsa except for questions about treatment plans/procedures provide 6-7 detailed sentences asnwer.
                 If the user asks about the appointment form, send out the appointment form to the user as a reply.
+                Focus on past user queries and answer pairs to provide more relevant answers accordingly.
                 Please don't mention that you're using the context information. Just provide a natural, helpful response."""
                 
     
     # Create a properly structured prompt for Gemini
     prompt_text = f"""        
-        INFORMATION : {context}
+        INFORMATION : {context}\n\n
         
-        DENTAL SERVICE: {dental_service}
-        
-        Please provide a helpful response that:
-        1. Directly answers the user's question using the information
-        2. Use a friendly, professional tone and behave like a dental concierge assistant
-        3. Structures your response with appropriate paragraphs and formatting
-        4. Provides max 2-3 sentences for general questions, or 6-7 detailed sentences for questions about treatment plans/procedures
-        5. If the context doesn't contain the answer, politely suggest contacting the front office for more information
+        DENTAL SERVICE: {dental_service}\n\n
 
-        USER QUESTION: {user_message}
+        Please provide a helpful response that:\n
+        1. Directly answers the user's question using the information\n
+        2. Use a friendly, professional tone and behave like a dental concierge assistant\n
+        3. Structures your response with appropriate paragraphs and formatting\n
+        4. If the context doesn't contain the answer, politely suggest contacting the front office for more information\n\n
+
+        USER QUESTION: {user_message}\n\n
+
+        Keep your response concise and to the point. but make sure it answers the USER QUESTION.\n
+        Please don't mention that you're using the INFORMATION, Just provide a natural, helpful response.\n"""
         
-        Please don't mention that you're using the context information. Just provide a natural, helpful response."""
-    
-    prompt = {
+    print(f"\n{'='*50}\nRecent history: {recent_history}\n{'='*50}")
+
+    # Create a new prompt message to add to history
+    prompt_message = {
         "role": "user",
         "parts": [{"text": prompt_text}]
     }
+    
+    # Create a copy of recent_history to avoid modifying the original
+    formatted_messages = recent_history.copy()
+    # Add the new prompt
+    formatted_messages.append(prompt_message)
 
-    # Generate response with Gemini using the correct API patterns
     try:
         generation_config = GenerateContentConfig(
             system_instruction=system_instruction,
@@ -71,7 +80,7 @@ def rag(client, config, query, groq_api_key, current_service, chat_history):
         # Use the client's models API to generate content with proper formatting
         response = client.models.generate_content(
             model='gemini-2.0-flash',
-            contents=[prompt],
+            contents=formatted_messages,
             config=generation_config
         )
         
