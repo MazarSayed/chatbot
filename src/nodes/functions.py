@@ -35,8 +35,8 @@ def business_info(dental_service: str,question_description:str,previous_dental_s
 #    buttons = [[{}]]  # Empty buttons for services not in the list
     return [answers,current_service,question_description]
 
-def book_appointment(user_question: str) -> dict:
-    print(f"Booking appointment with message: {user_question}")
+def book_appointment(request: str) -> dict:
+    print(f"Booking appointment with message: {request}")
     appointment_widget = {
         "status": "success",
         "data": {
@@ -94,7 +94,6 @@ def book_appointment(user_question: str) -> dict:
                             {"label": "Thursday", "value": "thursday"},
                             {"label": "Friday", "value": "friday"},
                             {"label": "Saturday", "value": "saturday"},
-                            {"label": "Sunday", "value": "sunday"}
                         ],
                         "required": True,
                         "key": "preferred_days"
@@ -104,7 +103,9 @@ def book_appointment(user_question: str) -> dict:
                         "type": "select",
                         "options": [
                             {"label": "AM", "value": "am"},
-                            {"label": "PM", "value": "pm"}
+                            {"label": "PM", "value": "pm"},
+                            {"label": "Anytime", "value": "anytime"}
+                            
                         ],
                         "required": True,
                         "key": "preferred_time"

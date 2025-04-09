@@ -39,6 +39,7 @@ class ChromaManager:
         """
         # Normalize the path for consistent dictionary keys
         self.db_path = config['qdrant_path']
+        self.collection_name = config['collection_name']
         
         # Variables for remote server configuration
         try:
@@ -248,7 +249,7 @@ class ChromaManager:
         Returns:
             List of answers
         """
-        collection_name = "QA"
+        collection_name = self.collection_name
         collection = self.get_or_create_collection(collection_name)
         
         # Update vector dimension if not set
@@ -303,7 +304,7 @@ class ChromaManager:
         Returns:
             List of answers
         """
-        collection_name = "QA"
+        collection_name = self.collection_name
         collection = self.get_or_create_collection(collection_name)
         
         # Update vector dimension if not set
@@ -368,7 +369,7 @@ class ChromaManager:
         Returns:
             List of document texts
         """
-        collection_name = "QA"
+        collection_name = self.collection_name
         collection = self.get_or_create_collection(collection_name)
         
         # Update vector dimension if not set
@@ -480,7 +481,7 @@ class ChromaManager:
         # Store buttons as a JSON string
         buttons_json = json.dumps(buttons) if buttons else '{}'
         
-        collection_name = "QA"
+        collection_name = self.collection_name
         collection = self.get_or_create_collection(collection_name)
         
         # Create collection with proper dimensions if it doesn't exist
@@ -531,7 +532,7 @@ class ChromaManager:
             answers: List of answers
             buttons_list: Optional list of button dictionaries
         """
-        collection_name = "QA"
+        collection_name = self.collection_name
         collection = self.get_or_create_collection(collection_name)
         
         # Update vector dimension if not set
@@ -600,7 +601,7 @@ class ChromaManager:
             embeddings: List of document embeddings
             documents: List of document texts
         """
-        collection_name = "QA"
+        collection_name = self.collection_name
         
         print(f"Starting batch_add_documents with {len(documents)} documents")
         

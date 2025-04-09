@@ -40,7 +40,8 @@ def rag(client, config, query, groq_api_key, current_service, chat_history):
                 Provides max 2-3 sentences for all questionsa except for questions about treatment plans/procedures provide 6-7 detailed sentences asnwer.
                 If the user asks about the appointment form, send out the appointment form to the user as a reply.
                 Focus on past user queries and answer pairs to provide more relevant answers accordingly.
-                Please don't mention that you're using the context information. Just provide a natural, helpful response."""
+                Please don't mention that you're using the context information. Just provide a natural, helpful response.
+                keep your introductions or repsonse to Hi as (Hi, I am Luna. How can I help you ?)."""
                 
     
     # Create a properly structured prompt for Gemini
@@ -52,12 +53,12 @@ def rag(client, config, query, groq_api_key, current_service, chat_history):
         Please provide a helpful response that:\n
         1. Directly answers the user's question using the information\n
         2. Use a friendly, professional tone and behave like a dental concierge assistant\n
-        3. Structures your response with appropriate paragraphs and formatting\n
+        3. Structures your response with appropriate paragraphs and formatting and keep your response concise and to the point \n
         4. If the context doesn't contain the answer, politely suggest contacting the front office for more information\n\n
 
         USER QUESTION: {user_message}\n\n
 
-        Keep your response concise and to the point. but make sure it answers the USER QUESTION.\n
+        Keep your response concise and to the point and answers the USER QUESTION.\n
         Please don't mention that you're using the INFORMATION, Just provide a natural, helpful response.\n"""
         
     print(f"\n{'='*50}\nRecent history: {recent_history}\n{'='*50}")

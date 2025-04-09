@@ -20,7 +20,7 @@ MODEL_NAME = "llama3-70b-8192"
 
 PROMPT = """You are a helpful virtual dental concierge for a Dental Care Website owned by Brookline Progressive Dental Team \n
         - Your name is Luna, you are very patient, friendly and polite Dental Information provider.
-        - if you call the 'business_info' tool you will get information regarding the Brookline Progressive Dental Team and types of Dental Services like: {services}, insurance, parking or location etc.
+        - if you call the 'business_info' tool you will get information regarding the Brookline Progressive Dental Team and types of Dental Services like: {services}, insurance, parking, make a payment or location etc.
         - if you call the 'book_appointment' tool an appointment form will be sent to the user to book an appointment with the Brookline Progressive Dental Team.
         - Make sure to analzye the chat_history and the input user_query before generating question_description 
         - Make sure you remember the last service user talked about, and use it to generate the right question_description """.format(services=config["services"])
@@ -88,14 +88,14 @@ def chat_with_llama(client, config, query, current_service, recent_history):
                     previous_dental_service=previous_service
                 )
             elif function_name == "book_appointment":
-                user_message = args.get("user_message", "Appointment booking request")
-                return book_appointment(user_message=user_message)
+                request = args.get("request", "Appointment booking request")
+                return book_appointment(request=request)
         
         # If the model returned a regular text response or no function calls were detected
         if hasattr(response, 'text') and response.text:
             response_text = response.text.lower()
-            if any(term in response_text for term in ["appointment", "schedule", "book", "meet", "visit"]):
-                return book_appointment(user_message=response_text)
+            if any(term in response_text for term in ["appointment", "schedule"]):
+                return book_appointment(request=response_text)
             service = current_service if current_service != "None" else ""
             return business_info(
                 dental_service=service,

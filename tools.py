@@ -33,18 +33,18 @@ def tools_calling(services, query, history, current_service):
     book_appointment_schema = {
         "type": "OBJECT",
         "properties": {
-            "user_question": {
+            "request": {
                 "type": "STRING",
-                "description": "user_question for booking the appointment"
+                "description": "request for booking the appointment"
             }
         },
-        "required": ["user_question"]
+        "required": ["request"]
     }
 
     # Create function declarations
     business_info_func = {
         "name": "business_info",
-        "description": f"""Provides Information related to Brookline business information and it's dental_services such as - {services}.
+        "description": f"""Provides Information related to Brookline business information, to make a payment and it's dental_services such as - {services}.
                       If not in the list of dental_services, let dental_service = 'None'.
                       You need to identify the dental_service and question_description based on user_input and chat_history.
                       Do not call this function if the user wants to book an appointment.""",
@@ -53,7 +53,7 @@ def tools_calling(services, query, history, current_service):
 
     book_appointment_func = {
         "name": "book_appointment",
-        "description": "Call this function if the user requests to Book an appointment or consultation with the Brookline Dental Team",
+        "description": "Call this function only if the user requests to Book an appointment or consultation with the Brookline Dental Team",
         "parameters": book_appointment_schema
     }
 
