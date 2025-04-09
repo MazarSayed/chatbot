@@ -28,12 +28,12 @@ def tools_calling(services, query, history, current_service):
     book_appointment_schema = {
         "type": "OBJECT",
         "properties": {
-            "context": {
+            "request": {
                 "type": "STRING",
-                "description": "Context for booking the appointment"
+                "description": "request for booking the appointment"
             }
         },
-        "required": ["context"]
+        "required": ["request"]
     }
 
     # Create function declarations using the appropriate format
