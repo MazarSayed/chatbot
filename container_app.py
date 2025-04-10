@@ -64,7 +64,10 @@ else:
 
     if "messages" not in st.session_state or clear_history:
         # Get initial greeting
-        response_text = """Hello! Welcome to Brookline Progressive Dental Team.\n I'm Luna, your dedicated smile concierge, here to help you find the perfect dental care just for you.\n We are a multi-specialty practice, serving the Greater Boston area for over 20 years and bringing confident smiles to thousands of families.\n Our team consists of American Board-Certified experts dedicated to providing top-tier dental care for both adults and children.\n To better assist you today, would you please first tell me what brings you here today?"""
+        response_text = """Hi, This is Luna.
+        Welcome to Brookline Progressive Dental Team.
+        I'm your dedicated smile concierge, here to help you find the perfect dental care.
+        To better assist you today, would you please first tell me what brings you here today?"""
 
         st.session_state["messages"] = [{"role": "model", "parts": [{"text": response_text}]}]
         st.session_state["chat_history"] = []

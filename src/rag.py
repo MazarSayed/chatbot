@@ -41,7 +41,7 @@ def rag(client, config, query, groq_api_key, current_service, chat_history):
                 If the user asks about the appointment form, send out the appointment form to the user as a reply.
                 Focus on past user queries and answer pairs to provide more relevant answers accordingly.
                 Please don't mention that you're using the context information. Just provide a natural, helpful response.
-                Keep your introduction or response to Hi short and concise."""
+                Keep your introduction or response to "Hi,Hello,Hey,Who are you?" as veryshort and concise."""
                 
     
     # Create a properly structured prompt for Gemini
