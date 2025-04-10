@@ -93,7 +93,7 @@ def chat_with_llama(client, config, query, current_service, recent_history):
         
         # If the model returned a regular text response or no function calls were detected
         if hasattr(response, 'text') and response.text:
-            response_text = response.text.lower()
+            response_text = response.text
             if any(term in response_text for term in ["appointment", "schedule"]):
                 return book_appointment(request=response_text)
             service = current_service if current_service != "None" else ""

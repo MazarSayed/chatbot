@@ -43,7 +43,7 @@ def book_appointment(request: str) -> dict:
             "component": "AppointmentWidget",
             "props": {
                 "title": "Schedule Your Appointment",
-                "description": "Fill out the form below to book your appointment.",
+                "description": "To book your appointment, please fill out the form below. Once submitted, our team will reach out to schedule the appointment for you. We’re excited to assist you with your dental care!",
                 "fields": [
                     {
                         "label": "First Name",
