@@ -40,7 +40,8 @@ def rag(client, config, query, groq_api_key, current_service, chat_history):
                 Provides max 2-3 sentences for all questionsa except for questions about treatment plans/procedures provide 6-7 detailed sentences asnwer.
                 If the user asks about the appointment form, send out the appointment form to the user as a reply.
                 Focus on past user queries and answer pairs to provide more relevant answers accordingly.
-                Please don't mention that you're using the context information. Just provide a natural, helpful response."""
+                Please don't mention that you're using the context information. Just provide a natural, helpful response.
+                Keep your introduction or response to Hi short and concise."""
                 
     
     # Create a properly structured prompt for Gemini
